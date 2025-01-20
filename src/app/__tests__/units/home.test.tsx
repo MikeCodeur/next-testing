@@ -7,13 +7,27 @@ describe('Home', () => {
 
   it("Le titre de la page d'accueil est correct", () => {
     setup()
-    const title = screen.getAllByText(/Next Module/)
+    const title = screen.getAllByText(/Next Testing/)
     expect(title[0]).toBeInTheDocument()
   })
 
   it("L'auteur de la page d'accueil est correct", () => {
     setup()
-    const author = screen.queryByText(/by Mike codeur/)
+    const author = screen.queryByText(/Mike Codeur/)
     expect(author).toBeInTheDocument()
+  })
+
+  it('Vérifie la présence du lien Instructions', () => {
+    setup()
+    const instructionsLink = screen.getByRole('link', {name: /instructions/i})
+    expect(instructionsLink).toBeInTheDocument()
+    expect(instructionsLink).toHaveAttribute('href', '/instructions')
+  })
+
+  it('Vérifie la présence du lien de connexion', () => {
+    setup()
+    const loginLink = screen.getByRole('link', {name: /connexion/i})
+    expect(loginLink).toBeInTheDocument()
+    expect(loginLink).toHaveAttribute('href', '/sign-in')
   })
 })
