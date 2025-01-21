@@ -26,7 +26,7 @@ describe('Home', () => {
 
   it('Vérifie la présence du lien de connexion', () => {
     setup()
-    const loginLink = screen.getByRole('link', {name: /connexion/i})
+    const loginLink = screen.getByRole('link', {name: /se connecter/i})
     expect(loginLink).toBeInTheDocument()
     expect(loginLink).toHaveAttribute('href', '/sign-in')
   })
