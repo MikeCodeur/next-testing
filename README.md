@@ -72,19 +72,3 @@ SESSION_SECRET="EMe+UwMuib+8bhS8H1ehG4M1P9oE7jiGWootiM5CZrU="
   ```bash
   pnpm test
   ```
-- Lancement des tests e2e avec affichage (reset db + build):
-  ```bash
-  pnpm e2e:test-clean
-  ```
-- Lancement des tests e2e avec affichage (sans reset db, ni build):
-  ```bash
-  pnpm e2e:test
-  ```
-- Lancement des tests e2e en CLI seulement (avec build):
-  ```bash
-  pnpm e2e:test-clean-ci
-  ```
-- Lancement des tests e2e en CLI seulement (sans reset db, ni build):
-  ```bash
-  pnpm e2e:test-ci
-  ```
