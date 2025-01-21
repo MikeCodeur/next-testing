@@ -18,12 +18,13 @@ const {email, password} = Cypress.env()
 // ROUTES
 Cypress.Commands.add('visitSignIn', () => {
   cy.visit('/')
-  cy.findAllByRole('link').each((link) => {
-    if (link.find('h2:contains("Se Connecter")').length > 0) {
-      cy.wrap(link).click()
-    }
-  })
-  cy.findByText('Se connecter').should('be.visible')
+  // Attendre que la page soit chargée
+  cy.get('h2').contains('Se Connecter').parent('a').click()
+  // Alternative: cy.get('a[href="/sign-in"]').click()
+
+  // Vérifier qu'on est sur la page de connexion
+  cy.url().should('include', '/sign-in')
+  cy.get('h1').contains('Se connecter').should('be.visible')
 })
 
 Cypress.Commands.add('visitShopAdmin', () => {

@@ -21,6 +21,7 @@ console.log('process.env.NEXT_RUNTIME AUTH', process.env.NEXT_RUNTIME)
 // const redactorRoutes = new Set(['/redaction'])
 
 export const {handlers, signIn, signOut, auth} = NextAuth({
+  trustHost: true,
   callbacks: {
     session: async ({session, token}) => {
       console.log('session', session)
