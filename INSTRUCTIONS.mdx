@@ -1,6 +1,6 @@
-# Comprendre l’hydratation
+# configurer Vitest + Next
 
-### 💡 Comprendre l’hydratation et gérer les Errors/Warning
+### 💡 Description longue de l'exercice
 
 ## 📝 Tes notes
 
@@ -8,145 +8,113 @@ Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeu
 
 ## Comprendre
 
-Dans les modules précèdent nous avons vu
+Nous allons utiliser `Vitest` comme utilitaire de test [https://vitest.dev/](https://vitest.dev/) Vitest est un framework de test rapide et intégré à Vite, idéal pour les projets React modernes.
 
-- Le rendu coté server (SSR) avec les React Server Components.
-- Le rendu coté client (CSR) avec les React Client Components.
-
-Nous allons aller plus en profondeur sur la manière dont Next gère tout cela. Rappel sur le SSR
-
-- Tout d'abord, toutes les données pour une page donnée sont récupérées sur le serveur.
-- Ensuite, le serveur rend le HTML pour la page.
-- Le HTML, le CSS et le JavaScript de la page sont envoyés au client.
-- Une interface utilisateur non interactive est affichée en utilisant le HTML et le CSS générés.
-- Enfin, React **hydrate** l'interface utilisateur pour la rendre interactive.
-
-![img](/course/server-rendering-without-streaming-chart.avif)
-
-📑 Le liens vers la doc [https://rc.nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming#what-is-streaming](https://rc.nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming#what-is-streaming)
-
-On pourrait croire que le processus `SSR` ne concerne que les composants server (RSC). Par exemple dans cet arbre de composant, on pourrait penser que le rendu SSR concerne les RSC et le rendu des RCC se fait uniquement du coté client (`CSR`).
-
-![img](/course/rcc-rsc-tree.png)
-
-En réalité le SSR concerne tout l’arbre de composants. RSC et RCC compris. Les RCC sont donc rendus 2 fois.
-
-Par exemple, ce RCC est rendu **une fois sur le server** sans code client (interaction client etc …) Par exemple ce composant est rendu
+### Dependances
 
 ```tsx
-export default function ClientComponent() {
-  const handleClick = () => {
-    alert('Hi')
-  }
-  return <button onClick={handleClick}>Click here</button>
-}
+ "@faker-js/faker": "^9.0.3",
+ "@testing-library/cypress": "^10.0.2",
+ "@testing-library/jest-dom": "6.4.8",
+ "@testing-library/react": "^16.0.1",
+ "@vitejs/plugin-react": "^4.3.1",
+ "@vitest/eslint-plugin": "^1.1.7",
+ "jsdom": "^24.1.1",
+ "vite-tsconfig-paths": "^4.3.2",
+ "vitest": "^2.0.4"
+
+ //script
+ "test": "vitest" //pnpm test
 ```
 
-Devient SSR
+La première étape est de définir un fichier de config `:vitest.config.ts`
 
 ```tsx
-<button>Click here</button>
+//vitest.config.ts
+import {defineConfig} from 'vitest/config'
+import react from '@vitejs/plugin-react'
+import tsconfigPaths from 'vite-tsconfig-paths'
+
+export default defineConfig({
+  plugins: [react(), tsconfigPaths()],
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/__tests__/setup-test.ts'],
+    include: ['**/*.test.{ts,tsx}'],
+    alias: {
+      '@/*': './src/*',
+    },
+    globals: true,
+    fileParallelism: false,
+  },
+})
+
 ```
 
-**Et un rendu ensuite sur le client avec hydration (ajout des events et code)**
+Voici les points clés de cette configuration
+
+1. **Plugins :**
+   - `react()` : Support React avec JSX et Fast Refresh.
+   - `tsconfigPaths()` : Résolution automatique des alias définis dans `tsconfig.json`.
+2. **Tests :**
+   - **Environnement `jsdom`** : Simule un DOM pour tester React ou tout ce qui interagit avec le navigateur.
+   - **`setupFiles`** : Charge un fichier pour configurer des globales ou mocker des modules avant les tests.
+   - **Fichiers inclus :** Tous les fichiers `.test.ts/tsx` sont détectés automatiquement.
+3. **Extras :**
+   - **Alias `@/`** : Facilite les imports depuis `src/`.
+   - **Globales activées :** Pas besoin d’importer manuellement `describe`, `it` ou `expect`.
+
+C’est une config simple, puissante et optimisée pour démarrer rapidement avec des tests modernes.
+
+Le setup contenant `import '@testing-library/jest-dom/vitest'` sert à enrichir les capacités de test en ajoutant des **matchers personnalisés** pour tester plus facilement le DOM dans les projets React
 
 ```tsx
-//handleClick est contenu dans le bundle/chunk.js
-<button onClick={handleClick}>Click here</button>
-```
+//setup-test.ts
+import '@testing-library/jest-dom/vitest'
 
-On a déjà vu plusieurs fois les bénéfice de ce type de découpage. Mais il faut bien prendre en compte que 2 rendus distinct sont fait. Et pour pouvoir hydrater correctement les contenus doivent être cohérent et identiques. Si le contenu rendu sur le server, diffère du contenu rendu sur le client, des warnings et erreurs sont lévés. Prenons l’exemple suivant :
-
-```tsx
-export default function ClientComponent() {
-  const date = new Date().toString()
-  return <div>{date}</div>
-}
-// SSR date : Tue Jul 02 2024 14:18:53 GMT+0800
-// Le rendu client arrive après
-// CSR date : Tue Jul 02 2024 14:18:54 GMT+0800
-```
-
-Next va alors lever une errors
-
-```tsx
-Unhandled Runtime Error
-Error: Text content does not match server-rendered HTML.
-See more info here: https://nextjs.org/docs/messages/react-hydration-error
-
-Text content did not match. Server: "Tue Jul 02 2024 14:27:43 GMT+0800 (Singapore Standard Time)" Client: "Tue Jul 02 2024 14:27:44 GMT+0800 (heure de Singapour)"
-
-En production :
-Error: Minified React error #425
 ```
 
 ## Exercice
 
-**🐶** Dans cet exercice tu vas devoir corriger les erreurs et warnings liés à l’hydratation.
+Dans un premier temps vérifie que l’environnement JS et JSDOM s’exécute correctement
 
-- Errors :
-  - Imbrication div dans `<p>`
-  - Pour la `date`, split supprime le temps (HH MM SS)
-- Warning
-  - Utilise `suppressHydrationWarning` dans un élément html
-    - Doc : https://nextjs.org/docs/messages/react-hydration-error#solution-3-using-suppresshydrationwarning
+Pour cela nous avons Un jeu de test contenant deux tests
 
-<aside>
-💡 Rafraichie la page (F5) et navigue pour voir la différence de comportement
+```tsx
+import {describe, it, expect} from 'vitest'
 
-</aside>
+describe('Environment Test', () => {
+  it('should run tests in js environment', () => {
+    expect(1).toBe(1)
+  })
+  it('should run tests in jsdom environment', () => {
+    // Crée un élément DOM fictif
+    const element = document.createElement('div')
+    element.id = 'test'
+    element.textContent = 'Hello, World!'
+    document.body.append(element)
+
+    // Vérifie que l'élément est ajouté au DOM
+    const foundElement = document.querySelector('#test')
+    expect(foundElement).toBeInTheDocument()
+    expect(foundElement?.textContent).toBe('Hello, World!')
+  })
+})
+
+```
+
+- **🐶 Edite `setup-test` pour faire ne sorte que `@testing-library/jest-dom/vitest` soit utilisé**
 
 Fichiers
 
-- `exercises/hydration/client-component.tsx`
+- `src/__tests__/setup-test.ts`
+- `vitest.config.ts`
 
-## Bonus
-
-### 1. 🚀 render après hydration
-
-Dans l’exercice précédent nous avons corrigé les erreurs d’hydrations mais les comportements ne sont pas ceux que nous souhaitons.
-
-- La Date a du être tronquée (or nous voulons afficher une vrai `date and time`)
-- Le rendu est bleu (serveur) or il devrait être rouge (client)
-
-Il manque une dernière étape (si le rendu client diffère du serveur), il manque un rendering. Il faut garder ce schéma en tête
-
-```tsx
-SSR -> Client Loading -> Hydration -> CSR (useEffect)
-// utilise le composant <Phases> pour logger les differentes phases
-```
-
-Pour effectuer un rendu supplémentaire ET qui ne pose pas de problème de d’hydratation il est possible d’utiliser
-
-```tsx
-const [hydrated, setHydrated] = useState(false)
-...
-useEffect(() => {
-  setHydrated(true)
-}, [])
-
- return <div>{hydrated? 'This is never prerendered' : 'Prerendered'}</div>
-```
-
-### Explication
-
-- Lors du SSR `hydrated` est `false`
-- Lors de l’hydratation `hydrated` est toujours à `false` (pas d’erreur)
-- Après hydratation nous utilisons `useEffect` pour effectuer `en re-render`
-
-🐶 Utilise cet technique pour afficher correctement la Date et le Style (blue/Red) en te basant sur `hydrated`.
-
-- Remet : **🤖**`const date = new Date().toString()`
-
-ps : tu peux supprimer `suppressHydrationWarning` car il ne devrait pas y avoir de warning sur le style
-
-Fichiers
-
-- `exercises/hydration/client-component.tsx`
+##
 
 ## Aller plus loin
 
-📑 Le lien vers la doc [https://nextjs.org/docs/messages/react-hydration-error](https://nextjs.org/docs/messages/react-hydration-error)
+📑 Le lien vers la doc [https://vitest.dev/config/](https://vitest.dev/config/)
 
 ## Ils vont t’aider
 
@@ -158,4 +126,4 @@ Fichiers
 
 ## 🐜 Feedback
 
-Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20PRO&entry.1430994900=Rendering%20Avancée&entry.533578441=08%20hydration).
+Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=01%20Config).
