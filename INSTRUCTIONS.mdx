@@ -1,4 +1,4 @@
-# configurer Vitest + Next
+# Test de Composant React (Testing librairie)
 
 ### 💡 Description longue de l'exercice
 
@@ -8,113 +8,112 @@ Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeu
 
 ## Comprendre
 
-Nous allons utiliser `Vitest` comme utilitaire de test [https://vitest.dev/](https://vitest.dev/) Vitest est un framework de test rapide et intégré à Vite, idéal pour les projets React modernes.
-
-### Dependances
+Pour tester les composants `React` avec `testing librairie` il faut utiliser [`render`](https://testing-library.com/docs/react-testing-library/api/#render) pour effectuer le rendu du composant , ensuite on pour tester avec [`screen`](https://testing-library.com/docs/queries/about/)
 
 ```tsx
- "@faker-js/faker": "^9.0.3",
- "@testing-library/cypress": "^10.0.2",
- "@testing-library/jest-dom": "6.4.8",
- "@testing-library/react": "^16.0.1",
- "@vitejs/plugin-react": "^4.3.1",
- "@vitest/eslint-plugin": "^1.1.7",
- "jsdom": "^24.1.1",
- "vite-tsconfig-paths": "^4.3.2",
- "vitest": "^2.0.4"
+import {render, screen} from '@testing-library/react'
 
- //script
- "test": "vitest" //pnpm test
+describe('Composant', () => {
+  const setup = () => render(<Component/>)
+  screen.getAllByText(/value/)
+  ...
+ })
 ```
 
-La première étape est de définir un fichier de config `:vitest.config.ts`
-
-```tsx
-//vitest.config.ts
-import {defineConfig} from 'vitest/config'
-import react from '@vitejs/plugin-react'
-import tsconfigPaths from 'vite-tsconfig-paths'
-
-export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
-  test: {
-    environment: 'jsdom',
-    setupFiles: ['./src/__tests__/setup-test.ts'],
-    include: ['**/*.test.{ts,tsx}'],
-    alias: {
-      '@/*': './src/*',
-    },
-    globals: true,
-    fileParallelism: false,
-  },
-})
-
-```
-
-Voici les points clés de cette configuration
-
-1. **Plugins :**
-   - `react()` : Support React avec JSX et Fast Refresh.
-   - `tsconfigPaths()` : Résolution automatique des alias définis dans `tsconfig.json`.
-2. **Tests :**
-   - **Environnement `jsdom`** : Simule un DOM pour tester React ou tout ce qui interagit avec le navigateur.
-   - **`setupFiles`** : Charge un fichier pour configurer des globales ou mocker des modules avant les tests.
-   - **Fichiers inclus :** Tous les fichiers `.test.ts/tsx` sont détectés automatiquement.
-3. **Extras :**
-   - **Alias `@/`** : Facilite les imports depuis `src/`.
-   - **Globales activées :** Pas besoin d’importer manuellement `describe`, `it` ou `expect`.
-
-C’est une config simple, puissante et optimisée pour démarrer rapidement avec des tests modernes.
-
-Le setup contenant `import '@testing-library/jest-dom/vitest'` sert à enrichir les capacités de test en ajoutant des **matchers personnalisés** pour tester plus facilement le DOM dans les projets React
-
-```tsx
-//setup-test.ts
-import '@testing-library/jest-dom/vitest'
-
-```
+📑 Le liens vers la doc [https://testing-library.com/docs/queries/about/](https://testing-library.com/docs/queries/about/)
 
 ## Exercice
 
-Dans un premier temps vérifie que l’environnement JS et JSDOM s’exécute correctement
+Dans cet exercice tu vas devoir tester le composant `Home` les tests
 
-Pour cela nous avons Un jeu de test contenant deux tests
-
-```tsx
-import {describe, it, expect} from 'vitest'
-
-describe('Environment Test', () => {
-  it('should run tests in js environment', () => {
-    expect(1).toBe(1)
-  })
-  it('should run tests in jsdom environment', () => {
-    // Crée un élément DOM fictif
-    const element = document.createElement('div')
-    element.id = 'test'
-    element.textContent = 'Hello, World!'
-    document.body.append(element)
-
-    // Vérifie que l'élément est ajouté au DOM
-    const foundElement = document.querySelector('#test')
-    expect(foundElement).toBeInTheDocument()
-    expect(foundElement?.textContent).toBe('Hello, World!')
-  })
-})
-
-```
-
-- **🐶 Edite `setup-test` pour faire ne sorte que `@testing-library/jest-dom/vitest` soit utilisé**
+- Le titre de la page d'accueil est correct
+- L'auteur de la page d'accueil est correct
+- Vérifie la présence du lien Instructions
+- Vérifie la présence du lien de connexion
 
 Fichiers
 
-- `src/__tests__/setup-test.ts`
-- `vitest.config.ts`
+- `exercise/about/page`
 
-##
+## Bonus
+
+### 1. 🚀 Test Hook (Context API)
+
+Dans cet exercice, nous allons apprendre à tester des composants utilisant le **Context API** et des hooks React, en combinant `@testing-library/react` avec `renderHook`. Nous allons travailler sur l'exemple d'un système de thème basé sur le contexte, où l'utilisateur peut basculer entre les modes `light`, `dark`, et `system`. L'objectif est d'écrire des tests unitaires pour garantir que le contexte fonctionne correctement.
+
+Les concepts clés que nous allons aborder :
+
+1. **Configurer un environnement de test mock** (comme `matchMedia`).
+2. **Utiliser `renderHook`** pour tester des hooks isolés.
+3. **Simuler des actions utilisateur** avec `act` pour modifier le contexte.
+4. **Nettoyer les effets secondaires** pour s'assurer de tests indépendants.
+
+### **2. Préparer le contexte**
+
+Vous devez avoir un fichier de contexte, comme `WrapperContext`, qui fournit le thème à l'ensemble de l'application. Exemple simplifié :
+
+```tsx
+tsx
+CopierModifier
+import {ThemeProvider} from 'next-themes';
+import React, {ReactNode} from 'react';
+
+export const WrapperContext = ({children}: {children: ReactNode}) => {
+  return <ThemeProvider>{children}</ThemeProvider>;
+};
+
+```
+
+### **3. Écrire ls tests**
+
+Le fichier de test est organisé en trois étapes :
+
+1. **Initialiser `matchMedia` :** Simule le comportement du navigateur pour les requêtes média.
+2. **Tester le thème par défaut :** Vérifie que le contexte est initialisé avec la valeur par défaut `system`.
+3. **Tester les changements de thème :** Simule l'appel de `setTheme` pour passer à `light` ou `dark`.
+
+Voici une description détaillée des tests :
+
+### **Test 1 : Le thème par défaut est `system`**
+
+```tsx
+typescript
+CopierModifier
+it("Theme default is 'system'", async () => {
+  const {result: themeResult} = renderHook(() => useTheme(), {
+    wrapper: WrapperContext,
+  });
+  expect(themeResult.current.theme).toBe('system');
+});
+
+```
+
+- Utilise `renderHook` pour tester `useTheme` dans le contexte de `WrapperContext`.
+- Vérifie que la valeur initiale de `theme` est bien `system`.
+
+Test 2 : Changer le thème en `light`
+
+Test 3 : Changer le thème en `dark`
+
+### **Conseils pour l'exercice**
+
+1. **Nettoyage entre les tests :**
+   - Utilise `beforeEach` pour configurer `matchMedia`.
+   - Utilise `afterEach` pour réinitialiser `localStorage` et éviter les interférences entre les tests.
+2. **Simuler des actions utilisateur :**
+   - Utilise `act` pour garantir que les mises à jour de l'état se font dans un environnement React contrôlé.
+3. **Bonne pratique :**
+   - Exécute les tests avec `npx vitest --run` pour vérifier que tout fonctionne comme prévu.
+
+Fichiers
+
+- `src/app/__tests__/units/theme.test.tsx`
+
+###
 
 ## Aller plus loin
 
-📑 Le lien vers la doc [https://vitest.dev/config/](https://vitest.dev/config/)
+📑 Le lien vers la doc [https://testing-library.com/docs/queries/about/](https://testing-library.com/docs/queries/about/)
 
 ## Ils vont t’aider
 
@@ -126,4 +125,4 @@ Fichiers
 
 ## 🐜 Feedback
 
-Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=01%20Config).
+Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=02%20Tests-component).

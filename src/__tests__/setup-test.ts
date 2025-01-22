@@ -1,2 +1,1 @@
-//import '@testing-library/jest-dom/vitest'
-console.log('setup-test')
+import '@testing-library/jest-dom/vitest'
