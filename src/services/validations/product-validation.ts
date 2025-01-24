@@ -2,11 +2,11 @@ import {DeleteProduct} from '@/services/types/domain/product-types'
 import {z} from 'zod'
 
 export const deleteProductServiceSchema = z.object({
-  id: z.string(),
+  id: z.string().uuid(),
 }) satisfies z.Schema<DeleteProduct>
 
 export const createEditProductServiceSchema = z.object({
-  id: z.string().optional(),
+  id: z.string().uuid().optional(),
   createdAt: z.string().optional(),
   quantity: z.coerce.number().optional(),
   category: z.string(),

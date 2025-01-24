@@ -1,104 +1,99 @@
-# Test Service : Autorisation
+# Test de la couche service (avec DAO mocké)
 
 ### 💡 Description longue de l'exercice
 
-Dans cette section, tu vas écrire des tests pour valider les fonctions d’autorisation de ton application. Ces fonctions permettent de vérifier les permissions, les rôles et la hiérarchie des rôles utilisateurs.
+Dans cette section, tu vas tester les fonctions de service utilisées pour gérer les produits. Ces services interagissent avec la couche DAO (Data Access Object) pour effectuer les opérations sur les données. L'objectif est de s'assurer que chaque service fonctionne correctement et respecte les règles d'autorisation définies.
 
-L’objectif est de :
+Tu utiliseras **Vitest** pour écrire et exécuter les tests, et tu apprendras à :
 
-1. Garantir que seuls les utilisateurs autorisés peuvent effectuer certaines actions.
-2. Tester les différents cas possibles, même ceux inattendus, pour garantir une application robuste.
-
-Tu commenceras par tester deux fonctions principales : `canCreateProduct` et `canReadProduct`, avant d’ajouter des tests pour les rôles et la hiérarchie dans les bonus.
-
-## 📝 Tes notes
-
-Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template).
-
-## Comprendre
-
-Voici un exemple de fonction pour générer un utilisateur de test :
-
-```jsx
-const createTestUser = (role: RoleEnum): AuthUser => ({
-  role,
-  user: {
-    id: faker.string.uuid(),
-    email: faker.internet.email(),
-    name: faker.person.firstName(),
-    image: null,
-  },
-  session: {
-    expires: new Date().toDateString(),
-    user: {
-      email: faker.internet.email(),
-      name: faker.person.firstName(),
-    },
-  },
-});
-
-```
-
-📑 Le lien vers la doc officielle [Vitest Documentation](https://vitest.dev/).
-
-Les tests te permettront de vérifier que les fonctions retournent les bons résultats en fonction des rôles des utilisateurs.
+1. Mocker la couche DAO pour simuler des appels à la base de données.
+2. Tester les autorisations en fonction des rôles utilisateur.
+3. Valider les comportements pour différents scénarios (succès, échec, permissions).
 
 ---
 
-## Exercice principal
+## 📝 Tes notes
 
-Dans cet exercice, tu vas tester les deux fonctions suivantes :
+Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template).
 
-1. **`canCreateProduct`** : Vérifie si un utilisateur peut créer un produit.
-2. **`canReadProduct`** : Retourne toujours `true`, peu importe l’utilisateur.
+---
 
-Il est important de comprendre comment tester ces cas pour s'assurer que les autorisations de base sont bien respectées.
+## Comprendre
 
-### Fichiers
+Voici un exemple de mock simple en Vitest :
 
-- `exercise/service-authorization.test.js`
+```jsx
+javascript
+CopierModifier
+vi.mock('@/db/repositories/product-repository', () => ({
+  getProductsDao: vi.fn(),
+}))
+
+vi.mocked(productRepository).getProductsDao.mockResolvedValue([
+  {
+    id: '12345',
+    title: 'Produit test',
+  },
+])
+```
+
+📑 Le lien vers la doc officielle de Vitest Mocking.
+
+---
+
+## Exercice
+
+Dans cet exercice, tu dois tester les services suivants :
+
+### 1. **`getProductsService`** (Lecture des produits)
+
+- Mocke le DAO `getProductsDao` pour simuler une liste de produits.
+- Vérifie que tout le monde (tous les rôles) peut appeler ce service.
+
+### 2. **`getCategoriesService`** (Lecture des catégories)
+
+- Mocke le DAO `getCategoriesDao` pour simuler une liste de catégories.
+- Vérifie que tout le monde (tous les rôles) peut appeler ce service.
+
+**Fichiers à utiliser :**
+
+- `exercise/services/product-service-mocked.exercise.js`
 
 ---
 
 ## Bonus
 
-### 1. 🚀 Tester les rôles (`hasRoleAdmin` et `hasRole`)
+### 1. 🚀 **`createProductService`**
 
-Ajoute des tests pour valider les rôles des utilisateurs :
+Ajoute des tests pour la création de produit :
 
-1. **`hasRoleAdmin`** :
-   - Vérifie qu’un utilisateur admin est correctement identifié.
-   - Vérifie qu’un utilisateur non admin est refusé.
-2. **`hasRole`** :
-   - Vérifie qu’un utilisateur possède un rôle donné.
-   - Vérifie que la fonction retourne `false` si le rôle ne correspond pas.
+- Vérifie qu'un utilisateur avec le rôle `USER` ne peut pas créer de produit.
+- Vérifie qu'un utilisateur avec le rôle `ADMIN` peut créer un produit.
+- Mocke le DAO `createProductDao` pour valider son appel avec les bons arguments.
 
-### Fichiers
+**Fichiers à utiliser :**
 
-- `bonus-1/service-authorization.test.js`
+- `exercise/services/product-service-mocked.bonus-1.js`
 
 ---
 
-### 2. 🚀 Vérifier la hiérarchie des rôles (`checkRoleHierarchy`)
+### 2. 🚀 **`updateProductService`**
 
-Ajoute des tests pour valider la hiérarchie des rôles :
+Ajoute des tests pour la mise à jour de produit :
 
-1. Un utilisateur avec un rôle supérieur peut accéder aux fonctionnalités des rôles inférieurs.
-2. Un utilisateur avec un rôle égal peut accéder à ses propres fonctionnalités.
-3. Un utilisateur avec un rôle inférieur ne peut pas accéder aux fonctionnalités des rôles supérieurs.
+- Vérifie qu'un utilisateur avec le rôle `USER` ne peut pas mettre à jour un produit.
+- Vérifie qu'un utilisateur avec le rôle `ADMIN` peut mettre à jour un produit.
+- Mocke le DAO `updateProductDao` pour valider son appel avec les bons arguments.
 
-### Fichiers
+**Fichiers à utiliser :**
 
-- `bonus-2/service-authorization.test.js`
+- `exercise/services/product-service-mocked.bonus-2.js`
 
 ---
 
 ## Aller plus loin
 
-📑 Le lien vers la documentation :
-
-- [Vitest](https://vitest.dev/)
-- [Faker.js](https://fakerjs.dev/)
+📑 Le lien vers la doc pour Mocker les modules en JavaScript.
 
 ---
 
@@ -106,12 +101,12 @@ Ajoute des tests pour valider la hiérarchie des rôles :
 
 - **🐶 Mowgli le Chien** : _Mowgli te guidera dans chaque exercice._
 - **🤖 Ash le Robot** : _Ash le Robot te donnera du code utile._
-- **🚀 Julia La roquette** : _Julia te donnera des défis supplémentaires._
-- **⛏️ Hulk le Marteau** : _Quand du code à simplifier ou à supprimer est présent._
-- **👨‍✈️ Hugo le chef de projet** : _Hugo t’aidera sur les spécifications des tests._
+- **🚀 Julia la Roquette** : _Julia te donnera des défis supplémentaires._
+- **⛏️ Hulk le Marteau** : _Quand du code à supprimer est présent._
+- **👨‍✈️ Hugo le chef de projet** : _Va t’aider sur les spécifications du projet._
 
 ---
 
 ## 🐜 Feedback
 
-Remplis le formulaire de [FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=03%20Test-authorization).
+Remplis le [formulaire de FeedBack](https://go.mikecodeur.com/cours-react-avis).
