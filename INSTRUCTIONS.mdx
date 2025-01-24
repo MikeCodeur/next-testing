@@ -1,128 +1,117 @@
-# Test de Composant React (Testing librairie)
+# Test Service : Autorisation
 
 ### 💡 Description longue de l'exercice
 
+Dans cette section, tu vas écrire des tests pour valider les fonctions d’autorisation de ton application. Ces fonctions permettent de vérifier les permissions, les rôles et la hiérarchie des rôles utilisateurs.
+
+L’objectif est de :
+
+1. Garantir que seuls les utilisateurs autorisés peuvent effectuer certaines actions.
+2. Tester les différents cas possibles, même ceux inattendus, pour garantir une application robuste.
+
+Tu commenceras par tester deux fonctions principales : `canCreateProduct` et `canReadProduct`, avant d’ajouter des tests pour les rôles et la hiérarchie dans les bonus.
+
 ## 📝 Tes notes
 
-Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
+Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template).
 
 ## Comprendre
 
-Pour tester les composants `React` avec `testing librairie` il faut utiliser [`render`](https://testing-library.com/docs/react-testing-library/api/#render) pour effectuer le rendu du composant , ensuite on pour tester avec [`screen`](https://testing-library.com/docs/queries/about/)
+Voici un exemple de fonction pour générer un utilisateur de test :
 
-```tsx
-import {render, screen} from '@testing-library/react'
-
-describe('Composant', () => {
-  const setup = () => render(<Component/>)
-  screen.getAllByText(/value/)
-  ...
- })
-```
-
-📑 Le liens vers la doc [https://testing-library.com/docs/queries/about/](https://testing-library.com/docs/queries/about/)
-
-## Exercice
-
-Dans cet exercice tu vas devoir tester le composant `Home` les tests
-
-- Le titre de la page d'accueil est correct
-- L'auteur de la page d'accueil est correct
-- Vérifie la présence du lien Instructions
-- Vérifie la présence du lien de connexion
-
-Fichiers
-
-- `exercise/about/page`
-
-## Bonus
-
-### 1. 🚀 Test Hook (Context API)
-
-Dans cet exercice, nous allons apprendre à tester des composants utilisant le **Context API** et des hooks React, en combinant `@testing-library/react` avec `renderHook`. Nous allons travailler sur l'exemple d'un système de thème basé sur le contexte, où l'utilisateur peut basculer entre les modes `light`, `dark`, et `system`. L'objectif est d'écrire des tests unitaires pour garantir que le contexte fonctionne correctement.
-
-Les concepts clés que nous allons aborder :
-
-1. **Configurer un environnement de test mock** (comme `matchMedia`).
-2. **Utiliser `renderHook`** pour tester des hooks isolés.
-3. **Simuler des actions utilisateur** avec `act` pour modifier le contexte.
-4. **Nettoyer les effets secondaires** pour s'assurer de tests indépendants.
-
-### **2. Préparer le contexte**
-
-Vous devez avoir un fichier de contexte, comme `WrapperContext`, qui fournit le thème à l'ensemble de l'application. Exemple simplifié :
-
-```tsx
-tsx
-CopierModifier
-import {ThemeProvider} from 'next-themes';
-import React, {ReactNode} from 'react';
-
-export const WrapperContext = ({children}: {children: ReactNode}) => {
-  return <ThemeProvider>{children}</ThemeProvider>;
-};
-
-```
-
-### **3. Écrire ls tests**
-
-Le fichier de test est organisé en trois étapes :
-
-1. **Initialiser `matchMedia` :** Simule le comportement du navigateur pour les requêtes média.
-2. **Tester le thème par défaut :** Vérifie que le contexte est initialisé avec la valeur par défaut `system`.
-3. **Tester les changements de thème :** Simule l'appel de `setTheme` pour passer à `light` ou `dark`.
-
-Voici une description détaillée des tests :
-
-### **Test 1 : Le thème par défaut est `system`**
-
-```tsx
-typescript
-CopierModifier
-it("Theme default is 'system'", async () => {
-  const {result: themeResult} = renderHook(() => useTheme(), {
-    wrapper: WrapperContext,
-  });
-  expect(themeResult.current.theme).toBe('system');
+```jsx
+const createTestUser = (role: RoleEnum): AuthUser => ({
+  role,
+  user: {
+    id: faker.string.uuid(),
+    email: faker.internet.email(),
+    name: faker.person.firstName(),
+    image: null,
+  },
+  session: {
+    expires: new Date().toDateString(),
+    user: {
+      email: faker.internet.email(),
+      name: faker.person.firstName(),
+    },
+  },
 });
 
 ```
 
-- Utilise `renderHook` pour tester `useTheme` dans le contexte de `WrapperContext`.
-- Vérifie que la valeur initiale de `theme` est bien `system`.
+📑 Le lien vers la doc officielle [Vitest Documentation](https://vitest.dev/).
 
-Test 2 : Changer le thème en `light`
+Les tests te permettront de vérifier que les fonctions retournent les bons résultats en fonction des rôles des utilisateurs.
 
-Test 3 : Changer le thème en `dark`
+---
 
-### **Conseils pour l'exercice**
+## Exercice principal
 
-1. **Nettoyage entre les tests :**
-   - Utilise `beforeEach` pour configurer `matchMedia`.
-   - Utilise `afterEach` pour réinitialiser `localStorage` et éviter les interférences entre les tests.
-2. **Simuler des actions utilisateur :**
-   - Utilise `act` pour garantir que les mises à jour de l'état se font dans un environnement React contrôlé.
-3. **Bonne pratique :**
-   - Exécute les tests avec `npx vitest --run` pour vérifier que tout fonctionne comme prévu.
+Dans cet exercice, tu vas tester les deux fonctions suivantes :
 
-Fichiers
+1. **`canCreateProduct`** : Vérifie si un utilisateur peut créer un produit.
+2. **`canReadProduct`** : Retourne toujours `true`, peu importe l’utilisateur.
 
-- `src/app/__tests__/units/theme.test.tsx`
+Il est important de comprendre comment tester ces cas pour s'assurer que les autorisations de base sont bien respectées.
 
-###
+### Fichiers
+
+- `exercise/service-authorization.test.js`
+
+---
+
+## Bonus
+
+### 1. 🚀 Tester les rôles (`hasRoleAdmin` et `hasRole`)
+
+Ajoute des tests pour valider les rôles des utilisateurs :
+
+1. **`hasRoleAdmin`** :
+   - Vérifie qu’un utilisateur admin est correctement identifié.
+   - Vérifie qu’un utilisateur non admin est refusé.
+2. **`hasRole`** :
+   - Vérifie qu’un utilisateur possède un rôle donné.
+   - Vérifie que la fonction retourne `false` si le rôle ne correspond pas.
+
+### Fichiers
+
+- `bonus-1/service-authorization.test.js`
+
+---
+
+### 2. 🚀 Vérifier la hiérarchie des rôles (`checkRoleHierarchy`)
+
+Ajoute des tests pour valider la hiérarchie des rôles :
+
+1. Un utilisateur avec un rôle supérieur peut accéder aux fonctionnalités des rôles inférieurs.
+2. Un utilisateur avec un rôle égal peut accéder à ses propres fonctionnalités.
+3. Un utilisateur avec un rôle inférieur ne peut pas accéder aux fonctionnalités des rôles supérieurs.
+
+### Fichiers
+
+- `bonus-2/service-authorization.test.js`
+
+---
 
 ## Aller plus loin
 
-📑 Le lien vers la doc [https://testing-library.com/docs/queries/about/](https://testing-library.com/docs/queries/about/)
+📑 Le lien vers la documentation :
+
+- [Vitest](https://vitest.dev/)
+- [Faker.js](https://fakerjs.dev/)
+
+---
 
 ## Ils vont t’aider
 
 - **🐶 Mowgli le Chien** : _Mowgli te guidera dans chaque exercice._
 - **🤖 Ash le Robot** : _Ash le Robot te donnera du code utile._
 - **🚀 Julia La roquette** : _Julia te donnera des défis supplémentaires._
-- **⛏️ Hulk le Marteau** : _Quand du code à supprimer est présent_
-- **👨‍✈️ Hugo le chef de projet** : _Va t'aider sur les spécifications du projet_
+- **⛏️ Hulk le Marteau** : _Quand du code à simplifier ou à supprimer est présent._
+- **👨‍✈️ Hugo le chef de projet** : _Hugo t’aidera sur les spécifications des tests._
+
+---
 
 ## 🐜 Feedback
 
-Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=02%20Tests-component).
+Remplis le formulaire de [FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=03%20Test-authorization).

@@ -42,7 +42,7 @@ export function checkRoleHierarchy(
   const userRoleIndex = roleHierarchy.indexOf(useRole as RoleEnum)
   const requestedRoleIndex = roleHierarchy.indexOf(requestedRole)
   console.log('checkRoleHierarchy', userRoleIndex, requestedRoleIndex)
-  if (requestedRoleIndex >= userRoleIndex) {
+  if (userRoleIndex >= requestedRoleIndex) {
     return true
   }
   return false

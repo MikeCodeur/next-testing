@@ -24,9 +24,9 @@ export type CreateAccount = AccountAddModel
 
 export enum RoleEnum {
   USER = 'USER',
-  GUEST = 'GUEST ',
+  GUEST = 'GUEST',
   REDACTOR = 'REDACTOR',
-  MODERATOR = 'MODERATOR ',
+  MODERATOR = 'MODERATOR',
   ADMIN = 'ADMIN',
   SUPER_ADMIN = 'SUPER_ADMIN',
 }
