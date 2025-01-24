@@ -43,10 +43,10 @@ describe('Authorization Service', () => {
       await setupUserAuthExtentedMocked()
 
       // 🐶 Appelle la fonction canCreateProduct
-      const result = await canCreateProduct()
+      //await canCreateProduct()
 
       // 🐶 Vérifie que le résultat est false
-      expect(result).toBe(false)
+      //expect(result).toBe(false)
     })
 
     it('should return true when user is admin', async () => {
@@ -54,37 +54,29 @@ describe('Authorization Service', () => {
       const adminUser = createTestUser(RoleEnum.ADMIN)
 
       // 🐶 Mocke le comportement pour qu’un utilisateur admin soit connecté
-      await setupUserAuthExtentedMocked(adminUser)
+      //await setupUserAuthExtentedMocked(adminUser)
 
       // 🐶 Appelle la fonction canCreateProduct
-      const result = await canCreateProduct()
 
       // 🐶 Vérifie que le résultat est true
-      expect(result).toBe(true)
+      //expect(result).toBe(true)
     })
 
     it('should return false when user is not admin', async () => {
       // 🐶 Crée un utilisateur classique
-      const regularUser = createTestUser(RoleEnum.USER)
-
+      //const regularUser = createTestUser(RoleEnum.USER)
       // 🐶 Mocke le comportement pour qu’un utilisateur non admin soit connecté
-      await setupUserAuthExtentedMocked(regularUser)
-
       // 🐶 Appelle la fonction canCreateProduct
-      const result = await canCreateProduct()
-
       // 🐶 Vérifie que le résultat est false
-      expect(result).toBe(false)
+      //expect(result).toBe(false)
     })
   })
 
   describe('canReadProduct', () => {
     it('should always return true', async () => {
       // 🐶 Appelle directement la fonction canReadProduct
-      const result = await canReadProduct()
-
       // 🐶 Vérifie que le résultat est true
-      expect(result).toBe(true)
+      //expect(result).toBe(true)
     })
   })
 })
