@@ -47,8 +47,8 @@ export async function initDrizzle() {
   if (process.env.NODE_ENV !== 'production') {
     await generateDb()
     await migrateDb()
+    await truncateTables()
   }
-  await truncateTables()
 }
 
 const generateDb = async () => {

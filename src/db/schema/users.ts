@@ -25,7 +25,7 @@ export const users = pgTable('user', {
   id: uuid('id')
     .default(sql`uuid_generate_v4()`)
     .primaryKey(),
-  email: text('email'),
+  email: text('email').unique(),
   name: text('name'),
   emailVerified: timestamp('emailverified', {mode: 'date'}),
   role: roleEnum('role').notNull(),

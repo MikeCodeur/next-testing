@@ -15,7 +15,7 @@ export const products = pgTable('product', {
   id: uuid('id')
     .default(sql`uuid_generate_v4()`)
     .primaryKey(),
-  title: varchar('title', {length: 256}),
+  title: varchar('title', {length: 256}).unique(),
   price: real('price'),
   description: text('description'),
   image: varchar('image', {length: 256}),

@@ -1,112 +1,243 @@
-# Test de la couche service (avec DAO mocké)
+# Tests de la persistance
 
-### 💡 Description longue de l'exercice
-
-Dans cette section, tu vas tester les fonctions de service utilisées pour gérer les produits. Ces services interagissent avec la couche DAO (Data Access Object) pour effectuer les opérations sur les données. L'objectif est de s'assurer que chaque service fonctionne correctement et respecte les règles d'autorisation définies.
-
-Tu utiliseras **Vitest** pour écrire et exécuter les tests, et tu apprendras à :
-
-1. Mocker la couche DAO pour simuler des appels à la base de données.
-2. Tester les autorisations en fonction des rôles utilisateur.
-3. Valider les comportements pour différents scénarios (succès, échec, permissions).
-
----
+### 💡 Tester la couche de persistance (Sans Mock)
 
 ## 📝 Tes notes
 
-Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template).
-
----
+Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
 
 ## Comprendre
 
-Voici un exemple de mock simple en Vitest :
+Dans la section précédente nous avons tester les services en `mockant` la persistance. Cela permet de tester la logique métier, autorisation, validation etc … Mais on ne peut pas détecter d’éventuelle problème SQL car rien n’est exécuté.
 
-```jsx
-javascript
-CopierModifier
-vi.mock('@/db/repositories/product-repository', () => ({
-  getProductsDao: vi.fn(),
-}))
+Plusieurs approche existe pour résoudre ce problème
 
-vi.mocked(productRepository).getProductsDao.mockResolvedValue([
-  {
-    id: '12345',
-    title: 'Produit test',
-  },
-])
+- Avoir un BDD dédiée à l’exécution des tests
+- Avoir un utilitaire qui permet d’avoir une BDD proche de Postgres embarqué comme
+  - [pg-mem](https://www.npmjs.com/package/pg-mem)
+  - [test-container](https://testcontainers.com/modules/postgresql/)
+
+### Nous allons dans un premier ici faire nos tests avec un BDD Postgres dédiée
+
+- Etape 1 :
+
+Nous allons donc nous assurer d’avoir un URL pour la base de tests `.env.test`
+
+```bash
+#.env.test
+POSTGRES_URL="postgres://default:hostname:5432/verceldb?sslmode=require"
 ```
 
-📑 Le lien vers la doc officielle de Vitest Mocking.
+Il va falloir ensuite s’assurer que les tests s’exécutent bien sur l’instance de tests. Pour cela nous allons logger l’index de `Drizzle`
 
----
+```tsx
+import * as todos from './todos'
+import * as users from './users'
+import * as categories from './categories'
+import * as products from './products'
+import * as accounts from './accounts'
+
+const bddUrl = process.env.POSTGRES_URL ?? ''
+const env = process.env.NODE_ENV ?? ''
+console.log('Drizzle ENV:', env)
+console.log('Drizzle schema bddUrl:', bddUrl)
+
+const pool = postgres(bddUrl, {max: 1})
+
+const db = drizzle(pool, {
+  schema: {...todos, ...users, ...categories, ...products, ...accounts},
+})
+
+export default db
+```
+
+- Etape 2 :
+
+Il nous faut un fichier de configuration `drizzle` spécial pour les tests avec une initialisation des variables d’environnements pour l’environnements de tests.
+
+Note : L’url pourrait être mise en dur dans `url:` pour être sur à 100% qu’un autre environnement n’est pas chargé
+
+```tsx
+import {defineConfig} from 'drizzle-kit'
+import initDotEnv from '../scripts/env'
+initDotEnv('test')
+
+export default defineConfig({
+  schema: './src/db/schema/*',
+  out: './drizzle/migrations',
+  dialect: 'postgresql',
+  dbCredentials: {
+    url: process.env.POSTGRES_URL as string,
+  },
+  verbose: true,
+  strict: true,
+  introspect: {
+    casing: 'camel',
+  },
+})
+
+```
+
+- Etape 3 : Avoir des scripts permettant d’avoir un base de données vide entre chaque tests, par exemple
+
+```tsx
+beforeAll(async () => {
+    await initDrizzle() // Assure-toi que la base de données est propre
+  })
+//
+export async function initDrizzle() {
+  if (process.env.NODE_ENV !== 'production') {
+    await generateDb() // appel drizzle-kit generate
+    await migrateDb() // appel drizzle-kit migrate
+    await truncateTables() // truncate toutes les tables
+  }
+}
+
+```
+
+Note : Ces fonctions seront fournis pour la suite de l’exercice.
 
 ## Exercice
 
-Dans cet exercice, tu dois tester les services suivants :
+Dans cet exercice il y a un test qui permet de tester la creation d’un utilisateur
 
-### 1. **`getProductsService`** (Lecture des produits)
+```tsx
+test('should create a new user', async () => {
+    const newUser: CreateUser = {
+      name: faker.person.firstName(),
+      email: 'test@test.com',
+      password: faker.internet.password(),
+      role: 'USER',
+      image: null,
+      emailVerified: null,
+    }
+    const createdUser = await createUserDao(newUser)
+    expect(createdUser).toStrictEqual({
+      ...newUser,
+      id: createdUser.id,
+    })
+  })
+```
 
-- Mocke le DAO `getProductsDao` pour simuler une liste de produits.
-- Vérifie que tout le monde (tous les rôles) peut appeler ce service.
+Pour rappel : l’email doit etre unique dans la table `email: text('email').unique()`
 
-### 2. **`getCategoriesService`** (Lecture des catégories)
+```tsx
+export const users = pgTable('user', {
+  id: uuid('id')
+    .default(sql`uuid_generate_v4()`)
+    .primaryKey(),
+  email: text('email').unique(),
+```
 
-- Mocke le DAO `getCategoriesDao` pour simuler une liste de catégories.
-- Vérifie que tout le monde (tous les rôles) peut appeler ce service.
+Ce qui veut dire que si un test s’exécute à nouveau un error apparaitra
 
-**Fichiers à utiliser :**
+```tsx
+PostgresError: duplicate key value violates unique constraint "user_email_unique"
+```
 
-- `exercise/services/product-service-mocked.exercise.js`
+- **🐶Dans cet exercice tu devoir dans un premier temps appeler** `initDrizzle` avant chaque test
+  - `generateDb` (génère les script sql : `drizzle-kit generate`)
+  - `migrateDb` (génère les script sql : `drizzle-kit migrate`)
+  - `truncateTables` (vide toutes les tables)
 
----
+```tsx
+export async function initDrizzle() {
+  if (process.env.NODE_ENV !== 'production') {
+    await generateDb()
+    await migrateDb()
+    await truncateTables()
+  }
+}
+```
+
+- **🐶 Continue sur tous les test de users**
+
+### **Liste des tests :**
+
+1. **Devrait créer un nouvel utilisateur**
+
+   Vérifie qu'un nouvel utilisateur peut être créé avec les données fournies.
+
+2. **Devrait lire tous les utilisateurs**
+
+   Vérifie que tous les utilisateurs peuvent être récupérés.
+
+3. **Devrait lire un utilisateur par ID**
+
+   Vérifie qu'un utilisateur spécifique peut être récupéré en utilisant son ID.
+
+4. **Devrait récupérer un utilisateur par email**
+
+   Vérifie qu'un utilisateur peut être récupéré en utilisant son email.
+
+5. **Devrait créer un utilisateur, un compte et une session**
+
+   Vérifie qu'un utilisateur, son compte, et sa session sont créés simultanément.
+
+6. **Devrait lancer une erreur et ne pas créer d'utilisateur avec une transaction**
+
+   Vérifie que la création d'un utilisateur échoue si une contrainte (comme une session existante) n'est pas respectée, et qu'aucune donnée n'est enregistrée dans la base de données.
+
+Fichiers
+
+- `src/db/__tests__/user-repository.test.ts`
 
 ## Bonus
 
-### 1. 🚀 **`createProductService`**
+### 1. 🚀 Test ProductRepository
 
-Ajoute des tests pour la création de produit :
+- **🐶 Implémente les tests product**
 
-- Vérifie qu'un utilisateur avec le rôle `USER` ne peut pas créer de produit.
-- Vérifie qu'un utilisateur avec le rôle `ADMIN` peut créer un produit.
-- Mocke le DAO `createProductDao` pour valider son appel avec les bons arguments.
+### **Liste des tests :**
 
-**Fichiers à utiliser :**
+1. **Devrait créer un nouvel utilisateur**
 
-- `exercise/services/product-service-mocked.bonus-1.js`
+   Vérifie qu'un nouvel utilisateur peut être créé avec les données fournies.
 
----
+2. **Devrait lire tous les utilisateurs**
 
-### 2. 🚀 **`updateProductService`**
+   Vérifie que tous les utilisateurs peuvent être récupérés.
 
-Ajoute des tests pour la mise à jour de produit :
+3. **Devrait lire un utilisateur par ID**
 
-- Vérifie qu'un utilisateur avec le rôle `USER` ne peut pas mettre à jour un produit.
-- Vérifie qu'un utilisateur avec le rôle `ADMIN` peut mettre à jour un produit.
-- Mocke le DAO `updateProductDao` pour valider son appel avec les bons arguments.
+   Vérifie qu'un utilisateur spécifique peut être récupéré en utilisant son ID.
 
-**Fichiers à utiliser :**
+4. **Devrait récupérer un utilisateur par email**
 
-- `exercise/services/product-service-mocked.bonus-2.js`
+   Vérifie qu'un utilisateur peut être récupéré en utilisant son email.
 
----
+5. **Devrait créer un utilisateur, un compte et une session**
+
+   Vérifie qu'un utilisateur, son compte, et sa session sont créés simultanément.
+
+6. **Devrait lancer une erreur et ne pas créer d'utilisateur avec une transaction**
+
+   Vérifie que la création d'un utilisateur échoue si une contrainte (comme une session existante) n'est pas respectée, et qu'aucune donnée n'est enregistrée dans la base de données.
+
+Fichiers
+
+- `src/db/__tests__/product-repository.test.ts`
+
+### 2. 🚀 Bonus 2
+
+2Plutôt que d’avoir le nœud `root` dans le code HTML, voyez si vous pouvez créer celui-ci en utilisant également JavaScript.
+
+Fichiers
+
+- `exercise/about/page`
 
 ## Aller plus loin
 
-📑 Le lien vers la doc pour Mocker les modules en JavaScript.
-
----
+📑 Le lien vers la doc [https://www.w3schools.com/html/html_css.asp](https://www.w3schools.com/html/html_css.asp)
 
 ## Ils vont t’aider
 
 - **🐶 Mowgli le Chien** : _Mowgli te guidera dans chaque exercice._
 - **🤖 Ash le Robot** : _Ash le Robot te donnera du code utile._
-- **🚀 Julia la Roquette** : _Julia te donnera des défis supplémentaires._
-- **⛏️ Hulk le Marteau** : _Quand du code à supprimer est présent._
-- **👨‍✈️ Hugo le chef de projet** : _Va t’aider sur les spécifications du projet._
-
----
+- **🚀 Julia La roquette** : _Julia te donnera des défis supplémentaires._
+- **⛏️ Hulk le Marteau** : _Quand du code à supprimer est présent_
+- **👨‍✈️ Hugo le chef de projet** : _Va t'aider sur les spécifications du projet_
 
 ## 🐜 Feedback
 
-Remplis le [formulaire de FeedBack](https://go.mikecodeur.com/cours-react-avis).
+Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=06%20Tests-peristance).
