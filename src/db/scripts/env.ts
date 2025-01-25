@@ -30,10 +30,7 @@ function initDotEnv(
 
   // Gestion des erreurs
   if (result.error) {
-    console.error(
-      `Erreur lors du chargement du fichier ${envFilePath}:`,
-      result.error
-    )
+    console.error(`Erreur lors du chargement du fichier ${envFilePath}:`)
   } else {
     console.log(`Environnement chargé à partir de ${envFilePath}`)
   }

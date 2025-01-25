@@ -9,13 +9,24 @@ import * as accounts from './accounts'
 
 const bddUrl = process.env.POSTGRES_URL ?? ''
 const env = process.env.NODE_ENV ?? ''
+
+if (process.env.NODE_ENV === 'test') {
+  console.error('Do not use this schema in test environment', env)
+  throw new Error('Do not use this schema in test environment')
+}
 console.log('Drizzle ENV:', env)
 console.log('Drizzle schema bddUrl:', bddUrl)
 
+export const schema = {
+  ...todos,
+  ...users,
+  ...categories,
+  ...products,
+  ...accounts,
+}
 const pool = postgres(bddUrl, {max: 1})
-
 const db = drizzle(pool, {
-  schema: {...todos, ...users, ...categories, ...products, ...accounts},
+  schema,
 })
 
 export default db

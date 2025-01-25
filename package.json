@@ -78,6 +78,7 @@
   "devDependencies": {
     "@faker-js/faker": "^9.0.3",
     "@mikecodeur/course-app-cli": "^1.0.19",
+    "@testcontainers/postgresql": "^10.17.1",
     "@testing-library/cypress": "^10.0.2",
     "@testing-library/jest-dom": "6.4.8",
     "@testing-library/react": "^16.0.1",
@@ -110,6 +111,7 @@
     "prettier-plugin-tailwindcss": "^0.5.14",
     "start-server-and-test": "^2.0.8",
     "tailwindcss": "^3.4.6",
+    "testcontainers": "^10.17.1",
     "tsx": "^4.17.0",
     "typescript": "^5.5.3",
     "vite-tsconfig-paths": "^4.3.2",

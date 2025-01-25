@@ -1,6 +1,6 @@
-# Tests de la persistance
+# Tests Persistence - Docker
 
-### 💡 Tester la couche de persistance (Sans Mock)
+### 💡 Description longue de l'exercice
 
 ## 📝 Tes notes
 
@@ -8,227 +8,113 @@ Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeu
 
 ## Comprendre
 
-Dans la section précédente nous avons tester les services en `mockant` la persistance. Cela permet de tester la logique métier, autorisation, validation etc … Mais on ne peut pas détecter d’éventuelle problème SQL car rien n’est exécuté.
+Précédemment nous avons utiliser une vraie base de données. Cela nécessite d’installer, configurer, et maintenant une instance Postgres. De plus si plusieurs utilisateurs / CI / utilisent cette instance au même moment cela peut poser des problèmes. Pour resoudre ce problème le mieux est d'avoir une instance embarquée qui va s’initialiser lors des test puis sera détruite a la fin.
 
-Plusieurs approche existe pour résoudre ce problème
+Pour cela il existe [testcontainer](https://testcontainers.com/modules/postgresql/?language=nodejs) basé sur [Docker](https://www.docker.com/) qui va permette de démarrer une instance de `postgres` localement.
 
-- Avoir un BDD dédiée à l’exécution des tests
-- Avoir un utilitaire qui permet d’avoir une BDD proche de Postgres embarqué comme
-  - [pg-mem](https://www.npmjs.com/package/pg-mem)
-  - [test-container](https://testcontainers.com/modules/postgresql/)
-
-### Nous allons dans un premier ici faire nos tests avec un BDD Postgres dédiée
-
-- Etape 1 :
-
-Nous allons donc nous assurer d’avoir un URL pour la base de tests `.env.test`
-
-```bash
-#.env.test
-POSTGRES_URL="postgres://default:hostname:5432/verceldb?sslmode=require"
-```
-
-Il va falloir ensuite s’assurer que les tests s’exécutent bien sur l’instance de tests. Pour cela nous allons logger l’index de `Drizzle`
+- Ajout dans le projet
 
 ```tsx
-import * as todos from './todos'
-import * as users from './users'
-import * as categories from './categories'
-import * as products from './products'
-import * as accounts from './accounts'
+pnpm add -D testcontainers @testcontainers/postgresql
+```
 
+- Setup du container
+
+```tsx
+//setup-container.ts
+export async function setupTestDatabase() {
+  const container = await new PostgreSqlContainer()
+    .withDatabase('test-db')
+    .withUsername('test-user')
+    .withPassword('test-password')
+    .start()
+
+  const pool = new Pool({
+    connectionString: container.getConnectionUri(),
+  })
+
+  // Utilisation du pool pg docker
+}
+```
+
+⚠️ Pour fonctionner Docker doit être configuré correctement
+
+- [Windows](https://docs.docker.com/desktop/setup/install/windows-install/)
+- [Mac](https://docs.docker.com/desktop/setup/install/mac-install/)
+- [Linux](https://docs.docker.com/desktop/setup/install/linux/)
+
+Exemple WSL / Unbuntu
+
+```bash
+#installe Docker
+sudo apt-get update
+sudo apt-get install docker.io
+
+#démarre Docker
+sudo systemctl start docker
+
+#démarre Docker automatiquement au demarrage
+sudo systemctl enable docker
+
+#redémarre le service Docker
+sudo systemctl restart docker
+
+#Ajoute ton utilisateur (remplacé par $USER) au groupe docker
+sudo usermod -aG docker $USER
+```
+
+⚠️ ps : Il faut souvent reboot le system complet la première fois
+
+## Exercice
+
+Le premier étape consiste a ne plus utiliser le pool de connexion de notre application mais celui de docker
+
+```tsx
+// db/schema
 const bddUrl = process.env.POSTGRES_URL ?? ''
 const env = process.env.NODE_ENV ?? ''
-console.log('Drizzle ENV:', env)
-console.log('Drizzle schema bddUrl:', bddUrl)
 
+export const schema = {
+  ...todos,
+  ...users,
+  ...categories,
+  ...products,
+  ...accounts,
+}
 const pool = postgres(bddUrl, {max: 1})
-
 const db = drizzle(pool, {
-  schema: {...todos, ...users, ...categories, ...products, ...accounts},
+  schema,
 })
 
 export default db
 ```
 
-- Etape 2 :
+- **🐶 Step 1 : Edite le fichier** `setup-container.ts` pour creer un `Pool` et un Instance `Drizzle` connecté a `docker`
+- **🐶 Step 2 : Mock `@/db/schema` dans les tests utiliser la bonne instance**
 
-Il nous faut un fichier de configuration `drizzle` spécial pour les tests avec une initialisation des variables d’environnements pour l’environnements de tests.
-
-Note : L’url pourrait être mise en dur dans `url:` pour être sur à 100% qu’un autre environnement n’est pas chargé
-
-```tsx
-import {defineConfig} from 'drizzle-kit'
-import initDotEnv from '../scripts/env'
-initDotEnv('test')
-
-export default defineConfig({
-  schema: './src/db/schema/*',
-  out: './drizzle/migrations',
-  dialect: 'postgresql',
-  dbCredentials: {
-    url: process.env.POSTGRES_URL as string,
-  },
-  verbose: true,
-  strict: true,
-  introspect: {
-    casing: 'camel',
-  },
-})
-
-```
-
-- Etape 3 : Avoir des scripts permettant d’avoir un base de données vide entre chaque tests, par exemple
+_Note : Pour être sur que les tests ne n’exécutent pas sur l’instance précédente , supprime/renomme/commente les fichiers `.env.test`. Pour cette exercice nous avons volontairement générer une erreur si on essaye d’utiliser `drizzle` en mode test_
 
 ```tsx
-beforeAll(async () => {
-    await initDrizzle() // Assure-toi que la base de données est propre
-  })
-//
-export async function initDrizzle() {
-  if (process.env.NODE_ENV !== 'production') {
-    await generateDb() // appel drizzle-kit generate
-    await migrateDb() // appel drizzle-kit migrate
-    await truncateTables() // truncate toutes les tables
-  }
-}
-
-```
-
-Note : Ces fonctions seront fournis pour la suite de l’exercice.
-
-## Exercice
-
-Dans cet exercice il y a un test qui permet de tester la creation d’un utilisateur
-
-```tsx
-test('should create a new user', async () => {
-    const newUser: CreateUser = {
-      name: faker.person.firstName(),
-      email: 'test@test.com',
-      password: faker.internet.password(),
-      role: 'USER',
-      image: null,
-      emailVerified: null,
-    }
-    const createdUser = await createUserDao(newUser)
-    expect(createdUser).toStrictEqual({
-      ...newUser,
-      id: createdUser.id,
-    })
-  })
-```
-
-Pour rappel : l’email doit etre unique dans la table `email: text('email').unique()`
-
-```tsx
-export const users = pgTable('user', {
-  id: uuid('id')
-    .default(sql`uuid_generate_v4()`)
-    .primaryKey(),
-  email: text('email').unique(),
-```
-
-Ce qui veut dire que si un test s’exécute à nouveau un error apparaitra
-
-```tsx
-PostgresError: duplicate key value violates unique constraint "user_email_unique"
-```
-
-- **🐶Dans cet exercice tu devoir dans un premier temps appeler** `initDrizzle` avant chaque test
-  - `generateDb` (génère les script sql : `drizzle-kit generate`)
-  - `migrateDb` (génère les script sql : `drizzle-kit migrate`)
-  - `truncateTables` (vide toutes les tables)
-
-```tsx
-export async function initDrizzle() {
-  if (process.env.NODE_ENV !== 'production') {
-    await generateDb()
-    await migrateDb()
-    await truncateTables()
-  }
+//src/db/schema/index.ts
+if (process.env.NODE_ENV === 'test') {
+  throw new Error('Do not use this schema in test environment')
 }
 ```
 
-- **🐶 Continue sur tous les test de users**
-
-### **Liste des tests :**
-
-1. **Devrait créer un nouvel utilisateur**
-
-   Vérifie qu'un nouvel utilisateur peut être créé avec les données fournies.
-
-2. **Devrait lire tous les utilisateurs**
-
-   Vérifie que tous les utilisateurs peuvent être récupérés.
-
-3. **Devrait lire un utilisateur par ID**
-
-   Vérifie qu'un utilisateur spécifique peut être récupéré en utilisant son ID.
-
-4. **Devrait récupérer un utilisateur par email**
-
-   Vérifie qu'un utilisateur peut être récupéré en utilisant son email.
-
-5. **Devrait créer un utilisateur, un compte et une session**
-
-   Vérifie qu'un utilisateur, son compte, et sa session sont créés simultanément.
-
-6. **Devrait lancer une erreur et ne pas créer d'utilisateur avec une transaction**
-
-   Vérifie que la création d'un utilisateur échoue si une contrainte (comme une session existante) n'est pas respectée, et qu'aucune donnée n'est enregistrée dans la base de données.
+C’est donc normal si les tests des exercices précédents échouent
 
 Fichiers
 
-- `src/db/__tests__/user-repository.test.ts`
+- `src/db/__tests__/setup-container.ts`
+- `src/db/__tests__/product-repo-docker.test.ts`
 
 ## Bonus
 
-### 1. 🚀 Test ProductRepository
-
-- **🐶 Implémente les tests product**
-
-### **Liste des tests :**
-
-1. **Devrait créer un nouvel utilisateur**
-
-   Vérifie qu'un nouvel utilisateur peut être créé avec les données fournies.
-
-2. **Devrait lire tous les utilisateurs**
-
-   Vérifie que tous les utilisateurs peuvent être récupérés.
-
-3. **Devrait lire un utilisateur par ID**
-
-   Vérifie qu'un utilisateur spécifique peut être récupéré en utilisant son ID.
-
-4. **Devrait récupérer un utilisateur par email**
-
-   Vérifie qu'un utilisateur peut être récupéré en utilisant son email.
-
-5. **Devrait créer un utilisateur, un compte et une session**
-
-   Vérifie qu'un utilisateur, son compte, et sa session sont créés simultanément.
-
-6. **Devrait lancer une erreur et ne pas créer d'utilisateur avec une transaction**
-
-   Vérifie que la création d'un utilisateur échoue si une contrainte (comme une session existante) n'est pas respectée, et qu'aucune donnée n'est enregistrée dans la base de données.
-
-Fichiers
-
-- `src/db/__tests__/product-repository.test.ts`
-
-### 2. 🚀 Bonus 2
-
-2Plutôt que d’avoir le nœud `root` dans le code HTML, voyez si vous pouvez créer celui-ci en utilisant également JavaScript.
-
-Fichiers
-
-- `exercise/about/page`
+### 1. 🚀 Fait la même chose pour d’autres repository
 
 ## Aller plus loin
 
-📑 Le lien vers la doc [https://www.w3schools.com/html/html_css.asp](https://www.w3schools.com/html/html_css.asp)
+📑 Le lien vers la doc [https://testcontainers.com/modules/postgresql/?language=nodejs](https://testcontainers.com/modules/postgresql/?language=nodejs)
 
 ## Ils vont t’aider
 
@@ -240,4 +126,4 @@ Fichiers
 
 ## 🐜 Feedback
 
-Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=06%20Tests-peristance).
+Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-react-avis).
