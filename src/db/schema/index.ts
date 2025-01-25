@@ -11,8 +11,8 @@ const bddUrl = process.env.POSTGRES_URL ?? ''
 const env = process.env.NODE_ENV ?? ''
 
 if (process.env.NODE_ENV === 'test') {
-  console.error('Do not use this schema in test environment', env)
-  throw new Error('Do not use this schema in test environment')
+  console.warn('Do not use this schema in test environment', env)
+  //throw new Error('Do not use this schema in test environment')
 }
 console.log('Drizzle ENV:', env)
 console.log('Drizzle schema bddUrl:', bddUrl)
@@ -28,5 +28,7 @@ const pool = postgres(bddUrl, {max: 1})
 const db = drizzle(pool, {
   schema,
 })
-
+console.log('DB properties:', Object.keys(db))
+console.log('Has query:', 'query' in db)
+console.log('Query methods:', db.query ? Object.keys(db.query) : 'No query')
 export default db

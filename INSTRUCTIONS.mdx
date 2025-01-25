@@ -1,6 +1,6 @@
-# Tests Persistence - Docker
+# Tests intégration
 
-### 💡 Description longue de l'exercice
+### 💡 Comprendre les Tests intégration
 
 ## 📝 Tes notes
 
@@ -8,113 +8,35 @@ Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeu
 
 ## Comprendre
 
-Précédemment nous avons utiliser une vraie base de données. Cela nécessite d’installer, configurer, et maintenant une instance Postgres. De plus si plusieurs utilisateurs / CI / utilisent cette instance au même moment cela peut poser des problèmes. Pour resoudre ce problème le mieux est d'avoir une instance embarquée qui va s’initialiser lors des test puis sera détruite a la fin.
+Les tests d'intégration vérifient que plusieurs composants d'une application fonctionnent correctement ensemble. Contrairement aux tests unitaires, ils incluent les interactions réelles entre différentes couches, comme la couche service et la base de données.
 
-Pour cela il existe [testcontainer](https://testcontainers.com/modules/postgresql/?language=nodejs) basé sur [Docker](https://www.docker.com/) qui va permette de démarrer une instance de `postgres` localement.
+Dans cette section, nous testerons la **couche service** sans mocker la couche de persistance . Cela permet de valider les flux métiers complets et de détecter les erreurs liées aux interactions avec la persistance.
 
-- Ajout dans le projet
-
-```tsx
-pnpm add -D testcontainers @testcontainers/postgresql
-```
-
-- Setup du container
-
-```tsx
-//setup-container.ts
-export async function setupTestDatabase() {
-  const container = await new PostgreSqlContainer()
-    .withDatabase('test-db')
-    .withUsername('test-user')
-    .withPassword('test-password')
-    .start()
-
-  const pool = new Pool({
-    connectionString: container.getConnectionUri(),
-  })
-
-  // Utilisation du pool pg docker
-}
-```
-
-⚠️ Pour fonctionner Docker doit être configuré correctement
-
-- [Windows](https://docs.docker.com/desktop/setup/install/windows-install/)
-- [Mac](https://docs.docker.com/desktop/setup/install/mac-install/)
-- [Linux](https://docs.docker.com/desktop/setup/install/linux/)
-
-Exemple WSL / Unbuntu
-
-```bash
-#installe Docker
-sudo apt-get update
-sudo apt-get install docker.io
-
-#démarre Docker
-sudo systemctl start docker
-
-#démarre Docker automatiquement au demarrage
-sudo systemctl enable docker
-
-#redémarre le service Docker
-sudo systemctl restart docker
-
-#Ajoute ton utilisateur (remplacé par $USER) au groupe docker
-sudo usermod -aG docker $USER
-```
-
-⚠️ ps : Il faut souvent reboot le system complet la première fois
+Ces tests sont essentiels pour s’assurer que l’application fonctionne correctement dans des conditions proches de la production, malgré une configuration plus complexe et un temps d’exécution légèrement plus long.
 
 ## Exercice
 
-Le premier étape consiste a ne plus utiliser le pool de connexion de notre application mais celui de docker
+Dans cet exercice nous avons fournis un test d’intégration pour le service product `product-service.test.ts` mais avec la méthode d’initialisation Drizzle
 
 ```tsx
-// db/schema
-const bddUrl = process.env.POSTGRES_URL ?? ''
-const env = process.env.NODE_ENV ?? ''
-
-export const schema = {
-  ...todos,
-  ...users,
-  ...categories,
-  ...products,
-  ...accounts,
-}
-const pool = postgres(bddUrl, {max: 1})
-const db = drizzle(pool, {
-  schema,
+beforeAll(async () => {
+    await initDrizzle()
 })
-
-export default db
 ```
 
-- **🐶 Step 1 : Edite le fichier** `setup-container.ts` pour creer un `Pool` et un Instance `Drizzle` connecté a `docker`
-- **🐶 Step 2 : Mock `@/db/schema` dans les tests utiliser la bonne instance**
+- **🐶 En te basant sur le même jeux de test tu vas devoir créer** `product-service-docker.test.ts`
 
-_Note : Pour être sur que les tests ne n’exécutent pas sur l’instance précédente , supprime/renomme/commente les fichiers `.env.test`. Pour cette exercice nous avons volontairement générer une erreur si on essaye d’utiliser `drizzle` en mode test_
-
-```tsx
-//src/db/schema/index.ts
-if (process.env.NODE_ENV === 'test') {
-  throw new Error('Do not use this schema in test environment')
-}
-```
-
-C’est donc normal si les tests des exercices précédents échouent
+Le meme jeux de tests mais cette fois ci en utiliser `postgre docker`
 
 Fichiers
 
-- `src/db/__tests__/setup-container.ts`
-- `src/db/__tests__/product-repo-docker.test.ts`
+- `src/services/**tests**/product-service-docker.test.ts`
 
-## Bonus
-
-### 1. 🚀 Fait la même chose pour d’autres repository
+##
 
 ## Aller plus loin
 
-📑 Le lien vers la doc [https://testcontainers.com/modules/postgresql/?language=nodejs](https://testcontainers.com/modules/postgresql/?language=nodejs)
+📑 Le lien vers la doc [https://katalon.com/resources-center/blog/integration-testing](https://katalon.com/resources-center/blog/integration-testing)
 
 ## Ils vont t’aider
 
@@ -126,4 +48,4 @@ Fichiers
 
 ## 🐜 Feedback
 
-Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-react-avis).
+Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=08%20tests-integration).
