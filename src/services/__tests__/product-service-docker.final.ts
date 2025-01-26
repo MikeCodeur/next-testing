@@ -1,5 +1,13 @@
 /* eslint-disable import/first */
-import {beforeAll, beforeEach, vi, test, describe, expect} from 'vitest'
+import {
+  beforeAll,
+  beforeEach,
+  vi,
+  test,
+  describe,
+  expect,
+  afterAll,
+} from 'vitest'
 import {setupTestDatabase} from '@/db/__tests__/setup-container'
 vi.mock('@/db/schema', async () => {
   const db = await setupTestDatabase()
@@ -30,6 +38,7 @@ import {CreateCategory} from '../types/domain/category-types'
 import {StartedPostgreSqlContainer} from '@testcontainers/postgresql'
 
 import {NodePgDatabase} from 'drizzle-orm/node-postgres'
+import {Pool} from 'pg'
 
 vi.mock('@/services/authentication/auth-service', () => ({
   auth: vi.fn(),
@@ -62,10 +71,14 @@ const getProductTest = () => {
 
 describe.sequential('[Docker][getProductsService] when called', () => {
   let db: NodePgDatabase
+  let container: StartedPostgreSqlContainer
+  let pool: Pool
 
   beforeAll(async () => {
     const setup = await setupTestDatabase()
     db = setup.db as unknown as NodePgDatabase
+    container = setup.container
+    pool = setup.pool as unknown as Pool
 
     const mockDb = await import('@/db/schema')
     Object.defineProperty(mockDb, 'default', {
@@ -73,6 +86,12 @@ describe.sequential('[Docker][getProductsService] when called', () => {
       writable: true,
     })
   })
+
+  afterAll(async () => {
+    await pool.end()
+    await container.stop()
+  })
+
   beforeEach(() => {
     vi.spyOn(productRepository, 'getProductsDao')
   })
@@ -87,16 +106,25 @@ describe.sequential('[Docker][getProductsService] when called', () => {
 
 describe.sequential('[getCategoriesService] when called', () => {
   let db: NodePgDatabase
+  let container: StartedPostgreSqlContainer
+  let pool: Pool
 
   beforeAll(async () => {
     const setup = await setupTestDatabase()
     db = setup.db as unknown as NodePgDatabase
+    container = setup.container
+    pool = setup.pool as unknown as Pool
 
     const mockDb = await import('@/db/schema')
     Object.defineProperty(mockDb, 'default', {
       value: db,
       writable: true,
     })
+  })
+
+  afterAll(async () => {
+    await pool.end()
+    await container.stop()
   })
 
   const productCategory = {
@@ -118,10 +146,14 @@ describe.sequential('[getCategoriesService] when called', () => {
 
 describe.sequential('[Docker][createProductService] when called', () => {
   let db: NodePgDatabase
+  let container: StartedPostgreSqlContainer
+  let pool: Pool
 
   beforeAll(async () => {
     const setup = await setupTestDatabase()
     db = setup.db as unknown as NodePgDatabase
+    container = setup.container
+    pool = setup.pool as unknown as Pool
 
     const mockDb = await import('@/db/schema')
     Object.defineProperty(mockDb, 'default', {
@@ -129,6 +161,12 @@ describe.sequential('[Docker][createProductService] when called', () => {
       writable: true,
     })
   })
+
+  afterAll(async () => {
+    await pool.end()
+    await container.stop()
+  })
+
   const product = {
     title: faker.lorem.word(),
     description: faker.lorem.paragraph(1),
@@ -163,14 +201,15 @@ describe.sequential('[Docker][createProductService] when called', () => {
 })
 
 describe.sequential('[Docker][updateProductService] when called', () => {
-  let container: StartedPostgreSqlContainer
   let db: NodePgDatabase
+  let container: StartedPostgreSqlContainer
+  let pool: Pool
 
   beforeAll(async () => {
     const setup = await setupTestDatabase()
-    container = setup.container
     db = setup.db as unknown as NodePgDatabase
-    console.log('Setup db uri', container.getConnectionUri())
+    container = setup.container
+    pool = setup.pool as unknown as Pool
 
     const mockDb = await import('@/db/schema')
     Object.defineProperty(mockDb, 'default', {
@@ -178,6 +217,12 @@ describe.sequential('[Docker][updateProductService] when called', () => {
       writable: true,
     })
   })
+
+  afterAll(async () => {
+    await pool.end()
+    await container.stop()
+  })
+
   beforeEach(async () => {
     const product = getProductTest()
     await productRepository.createProductDao(product)
