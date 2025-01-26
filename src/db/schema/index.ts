@@ -28,7 +28,5 @@ const pool = postgres(bddUrl, {max: 1})
 const db = drizzle(pool, {
   schema,
 })
-console.log('DB properties:', Object.keys(db))
-console.log('Has query:', 'query' in db)
-console.log('Query methods:', db.query ? Object.keys(db.query) : 'No query')
+
 export default db

@@ -1,6 +1,6 @@
-# Tests intégration
+# Tests End To End
 
-### 💡 Comprendre les Tests intégration
+### 💡 Comprendre les Tests End To End
 
 ## 📝 Tes notes
 
@@ -8,35 +8,343 @@ Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeu
 
 ## Comprendre
 
-Les tests d'intégration vérifient que plusieurs composants d'une application fonctionnent correctement ensemble. Contrairement aux tests unitaires, ils incluent les interactions réelles entre différentes couches, comme la couche service et la base de données.
+Les tests End-to-End (E2E) sont conçus pour valider le fonctionnement global d'une application, du front-end au back-end, en passant par toutes les couches intermédiaires. Contrairement aux tests unitaires ou d'intégration, les tests E2E simulent le parcours réel d'un utilisateur, en interagissant avec l'interface utilisateur et en testant les fonctionnalités dans leur ensemble.
 
-Dans cette section, nous testerons la **couche service** sans mocker la couche de persistance . Cela permet de valider les flux métiers complets et de détecter les erreurs liées aux interactions avec la persistance.
+Avec [**Cypress**](https://docs.cypress.io/app/get-started/install-cypress), un outil populaire pour les tests E2E, nous pouvons écrire des tests rapides et robustes qui imitent les actions de l'utilisateur (clics, remplissage de formulaires, navigation). L'objectif est de garantir que l'application répond correctement aux interactions utilisateur et fonctionne comme prévu dans un environnement proche de la production.
 
-Ces tests sont essentiels pour s’assurer que l’application fonctionne correctement dans des conditions proches de la production, malgré une configuration plus complexe et un temps d’exécution légèrement plus long.
+Dans cette section, nous allons explorer comment configurer et utiliser Cypress pour tester votre application de manière complète et fiable.
+
+- Dépendances
+
+```tsx
+ pnpm add cypress -D
+```
+
+- Script Install
+
+```tsx
+pnpm dlx cypress install
+```
+
+📑 Le liens vers la doc [https://docs.cypress.io/app/get-started/install-cypress](https://docs.cypress.io/app/get-started/install-cypress)
+
+Les tests E2E doivent reproduire **les conditions réelles** pour garantir que l'application fonctionne de bout en bout. L’objectif est de valider **toutes les couches** (UI, API, base de données) à travers des scénarios proches de l’expérience utilisateur.
+
+---
+
+### **Principes clés :**
+
+1. **Limitation des Mocks** :
+   - Les mocks et conteneurs sont minimisés. On teste un système complet, proche de la production.
+2. **Actions utilisateur complètes** :
+   - Les interactions (clics, formulaires) sont simulées via un **navigateur embarqué** (Cypress, Playwright).
+   - Chaque action doit inclure toutes les étapes : interface, API, persistance.
+3. **Validation de bout en bout** :
+   - Les données doivent circuler correctement entre présentation, logique métier et stockage, pour éviter des surprises en production.
+
+---
+
+### **Exemple pratique :**
+
+- L’utilisateur se connecte, ajoute un produit au panier, passe une commande.
+- Le test vérifie les interactions UI, les réponses API et l’enregistrement dans la base de données.
+
+---
+
+### **Pourquoi cette approche ?**
+
+- **Fiabilité** : Détecte les erreurs inter-couches.
+- **Expérience utilisateur** : Valide les flux critiques.
+- **Proximité production** : Réduit les bugs en prod.
+
+## Cypress : Exemple de Tests
+
+```tsx
+describe('Home Page - Basics', () => {
+  it('should load the homepage successfully', () => {
+    // Charger la page d'accueil
+    cy.visit('/');
+
+    // Vérifier que le titre de la page contient le texte attendu
+    cy.title().should('include', 'Accueil');
+
+    // Vérifier que le header principal est visible
+    cy.get('h1').should('be.visible').and('contain', 'Bienvenue sur notre site');
+  });
+});
+```
+
+## Cypress : Les modes
+
+Deux modes sont disponibles avec Cypress :
+
+- Interactif
+
+`Cypress` lance une interface graphique qui permet de visualiser concrètement les tests, quelles pages, actions etc … C’est utilise pour creer les tests en local
+
+```bash
+npx cypress open
+#package.json
+"e2e": "cypress open",
+```
+
+- headless : (sans écran)
+
+Utilise pour exécuter les tests dans un terminal ou sur un CI
+
+```bash
+npx cypress run
+#package.json
+"e2e:ci": "cypress run",
+```
+
+⚠️ Cypress va se connecter sur un Server pour exécuter les tests
+
+```tsx
+import {defineConfig} from 'cypress'
+import {config} from 'dotenv'
+
+config({path: '.env.test'})
+
+export default defineConfig({
+  e2e: {
+    setupNodeEvents(on, config) {
+      // implement node event listeners here
+    },
+    baseUrl: 'http://localhost:3000',
+    env: {
+      email: process.env.CYPRESS_EMAIL,
+      password: process.env.CYPRESS_PASSWORD,
+    },
+  },
+})
+// a ajouter .env.test
+//CYPRESS_EMAIL='admin@gmail.com'
+//CYPRESS_PASSWORD='MDp'
+```
+
+## Préparer le build (env test)
+
+Pour préparer un `build` de production mais avec un environnement de tests
+
+```bash
+ "build:test": "dotenv -e .env.test -- next build",
+ "start:test": "dotenv -e .env.test -- next start",
+```
+
+## start-server-and-test
+
+Pour démarrer un server et lancer les tests nous utiliseront un utilitaire : `start-server-and-test`, celui ci permet de
+
+- lancer une commande qui démarre le server
+- Attendre que l’adresse réponde
+- Lancer un commande de test
+
+```bash
+start-server-and-test <commande_server> http://127.0.0.1:3000 <commande_tests>
+```
+
+```bash
+
+ "e2e:test": "start-server-and-test start:test http://127.0.0.1:3000 e2e",
+```
+
+## **Récap des commandes tests**
+
+- Lancement des tests avec vitest:
+  ```bash
+  pnpm test
+  ```
+- Lancement des tests e2e avec affichage (reset db + build):
+  ```bash
+  pnpm e2e:test-clean
+  ```
+- Lancement des tests e2e avec affichage (sans reset db + build):
+  ```bash
+  pnpm e2e:test
+  ```
+- Lancement des tests e2e en CLI seulement (avec reset db + build):
+  ```bash
+  pnpm e2e:test-clean-ci
+  ```
+- Lancement des tests e2e en CLI seulement (sans reset db + build):
+  ```bash
+  pnpm e2e:test-ci
+  ```
 
 ## Exercice
 
-Dans cet exercice nous avons fournis un test d’intégration pour le service product `product-service.test.ts` mais avec la méthode d’initialisation Drizzle
+Dans cet exercice tu vas devoir tester la home avec des fonctions basiques de l’api de `cypress`
 
-```tsx
-beforeAll(async () => {
-    await initDrizzle()
-})
-```
-
-- **🐶 En te basant sur le même jeux de test tu vas devoir créer** `product-service-docker.test.ts`
-
-Le meme jeux de tests mais cette fois ci en utiliser `postgre docker`
+- `cy.visit('/')`
+- `cy.get('p')`
+- etc …
 
 Fichiers
 
-- `src/services/**tests**/product-service-docker.test.ts`
+- `cypress/e2e/home.final.ts`
 
-##
+## Bonus
+
+### 1. 🚀 Commandes personnalisés
+
+Il y a des actions que l’on doit répéter souvent dans nos tests : Exemple
+
+- Aller sur la page de connexion
+- Entrer le login pass
+- Se connecter
+- Vérifier que l’on est bien connecté
+- etc …
+
+Répéter ces étapes sur chaque tests peut vite alourdir les tests. Cela duplique beaucoup de code et c’est difficile à maintenir.
+
+Exemple commun a beaucoup de tests coté connecté (`dashboard`)
+
+```tsx
+it('Connection Dashboard', () => {
+    cy.visit('/')
+    // Attendre que la page soit chargée
+    cy.get('h2').contains('Se Connecter').parent('a').click()
+    cy.url().should('include', '/sign-in')
+    cy.get('h1').contains('Se connecter').should('be.visible')
+    cy.findByPlaceholderText('Email').type('admin@gmail.com')
+    cy.findByPlaceholderText('Password').type('Azerty123')
+    cy.findByRole('button', {name: 'Login'}).click()
+    cy.url().should('contain', '/sign-in')
+    cy.location('pathname').should('eq', '/logout')
+    cy.findByRole('heading', {level: 1, name: 'Déconnexion'}).should(
+      'be.visible'
+    )
+    cy.findAllByRole('link').each((link) => {
+      if (link.find('span:contains("Dashboard")').length > 0) {
+        cy.wrap(link).click()
+      }
+    })
+    cy.url().should('contain', '/dashboard')
+  })
+```
+
+Pour cela il existe les commandes personnalisées. Par exemple la commande `visitSignIn`
+
+```tsx
+//command.ts
+
+Cypress.Commands.add('visitSignIn', () => {
+  cy.visit('/')
+  cy.get('h2').contains('Se Connecter').parent('a').click()
+  cy.url().should('include', '/sign-in')
+  cy.get('h1').contains('Se connecter').should('be.visible')
+})
+
+//test.cy.ts
+it('Sign-in', () => {
+    cy.visitSignIn()
+ })
+```
+
+⚠️ Pour que `typescript` reconnaisse ces commandes personnalisées, nous utiliseront un fichier `cypress.d.ts`
+
+```tsx
+import {mount} from 'cypress/react'
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      mount: typeof mount
+      visitSignIn(): Chainable<void>
+      ... //other custom commands
+    }
+  }
+}
+
+```
+
+**🐶 Step 1 : Dans cet exercice tu vas devoir créé les commandes personnalisées suivantes :**
+
+- `visitShopAdmin` qui se base sur :
+  - `visitSignIn`
+  - `fillAuthForm` : Remplissage du formulaire login
+  - `login` : Se connecte (clique button)
+
+**🐶 Step 2 : Utilise ces commandes personnalisées dans** `server-component.cy.ts` pour accéder a la page d’administration de la boutique
+
+Fichiers
+
+- `cypress/e2e/server-component.cy.ts`
+- `cypress/support/commands.ts`
+
+### 2. 🚀 CRUD Formulaire Product
+
+Maintenant que nous avons des commandes personnalisé pour ce connecté a l’administration. Nous allons pouvoir nous concentrer sur les tests fonctionnelles de la page admin shop. Les opérations que nous auront à répéter plusieurs fois sont liée au remplissage du formulaire produit.
+
+**🐶** Step 1 : Dans cet exercice tu vas devoir créer les commandes personnalisées suivantes
+
+- `fillProductForm`
+- `createProduct`
+- `updateProduct`
+- `deleteProduct`
+
+  **🐶** Step 2 : Les tests
+
+### **Liste des tests pour "CRUD operations for Product"**
+
+### **1. Lecture des produits existants ("Read product's list")**
+
+**Objectif** : Vérifier que la liste des produits existants est affichée correctement dans l'interface d'administration.
+
+- **Étapes** :
+  1. Visiter la page d'administration des produits avec `cy.visitShopAdmin()`.
+  2. Localiser le tableau contenant les produits (`tbody > tr`).
+  3. Vérifier que la liste contient un produit existant, comme "Wilson Pro Staff Tennis Racket".
+
+---
+
+### **2. Création d'un produit ("Create product")**
+
+**Objectif** : Ajouter un nouveau produit à la liste des produits et vérifier qu'il est correctement sauvegardé.
+
+- **Étapes** :
+  1. Visiter la page d'administration des produits avec `cy.visitShopAdmin()`.
+  2. Vérifier que le produit n'est pas encore présent avec `cy.containProductTitle(product.title)`.
+  3. Créer un produit en utilisant la commande personnalisée `cy.createProduct(product)`.
+  4. Vérifier qu'un message de confirmation s'affiche avec `cy.containToastMessage('Product saved')`.
+  5. Confirmer que le nouveau produit est ajouté à la liste avec `cy.containProductTitle(product.title, true)`.
+
+---
+
+### **3. Mise à jour d'un produit ("Update product")**
+
+**Objectif** : Modifier un produit existant et vérifier que les modifications sont correctement enregistrées.
+
+- **Étapes** :
+  1. Visiter la page d'administration des produits avec `cy.visitShopAdmin()`.
+  2. Vérifier que le produit à modifier existe avec `cy.containProductTitle(product.title, true)`.
+  3. Sélectionner le produit existant dans le tableau (`cy.get('tbody').find('tr').contains(product.title)`).
+  4. Mettre à jour les informations du produit avec `cy.updateProduct(updateProduct)`.
+  5. Vérifier qu'un message de confirmation s'affiche avec `cy.containToastMessage('Product saved')`.
+  6. Vérifier que l'ancien titre du produit n'est plus affiché avec `cy.containProductTitle(product.title)`.
+  7. Confirmer que le nouveau titre est affiché avec `cy.containProductTitle(updateProduct.title, true)`.
+
+---
+
+### **4. Suppression d'un produit ("Delete product")**
+
+**Objectif** : Supprimer un produit de la liste et s'assurer qu'il n'apparaît plus.
+
+- **Étapes** :
+  1. Visiter la page d'administration des produits avec `cy.visitShopAdmin()`.
+  2. Supprimer le produit en utilisant son titre avec `cy.deleteProduct(updateProduct.title)`.
+  3. Vérifier qu'un message de confirmation s'affiche avec `cy.containToastMessage('Product deleted')`.
+  4. Confirmer que le produit n'est plus présent dans la liste avec `cy.containProductTitle(updateProduct.title)`.
+
+Fichiers
+
+- `cypress/e2e/server-component.cy.ts`
+- `cypress/support/commands.tse`
 
 ## Aller plus loin
 
-📑 Le lien vers la doc [https://katalon.com/resources-center/blog/integration-testing](https://katalon.com/resources-center/blog/integration-testing)
+📑 Le lien vers la doc [https://docs.cypress.io/app/core-concepts/introduction-to-cypress](https://docs.cypress.io/app/core-concepts/introduction-to-cypress)
 
 ## Ils vont t’aider
 
@@ -48,4 +356,4 @@ Fichiers
 
 ## 🐜 Feedback
 
-Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=08%20tests-integration).
+Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=09%20tests-end2end).

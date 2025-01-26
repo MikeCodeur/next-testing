@@ -28,7 +28,13 @@
     "db:reset-test": "pnpm db:drop-test && pnpm db:generate-test && pnpm db:migrate-test && pnpm db:seed-test",
     "db:reset-seed": "pnpm db:drop && pnpm db:clear && pnpm db:generate && pnpm db:migrate && pnpm db:seed",
     "test:cleardb": "dotenv -e .env.test -- tsx src/db/scripts/clear.ts true env=test",
-    "test": "vitest  "
+    "test": "vitest --run && e2e:test-clean-ci",
+    "e2e": "cypress open",
+    "e2e:ci": "cypress run",
+    "e2e:test": "start-server-and-test start:test http://127.0.0.1:3000 e2e",
+    "e2e:test-ci": "start-server-and-test start:test http://127.0.0.1:3000 e2e:ci",
+    "e2e:test-clean": "pnpm test:cleardb && pnpm db:reset-test && pnpm build:test && pnpm e2e:test",
+    "e2e:test-clean-ci": "pnpm test:cleardb && pnpm db:reset-test && pnpm build:test && pnpm e2e:test-ci"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.4.2",
@@ -92,7 +98,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "@vitest/eslint-plugin": "^1.1.7",
     "autoprefixer": "^10.4.20",
-    "cypress": "^13.15.0",
+    "cypress": "^14.0.0",
     "dotenv-cli": "^7.4.2",
     "drizzle-kit": "^0.24.2",
     "eslint": "^8.57.0",
