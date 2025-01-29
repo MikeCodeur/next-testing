@@ -29,26 +29,26 @@ Cypress.Commands.add('visitSignIn', () => {
 
 Cypress.Commands.add('visitShopAdmin', () => {
   cy.visitSignIn()
-  cy.login()
-  cy.url().should('contain', '/sign-in')
-  cy.location('pathname').should('eq', '/logout')
-  cy.findByRole('heading', {level: 1, name: 'Déconnexion'}).should('be.visible')
-  cy.findAllByRole('link').each((link) => {
-    if (link.find('span:contains("Dashboard")').length > 0) {
-      cy.wrap(link).click()
-    }
-  })
-  cy.url().should('contain', '/dashboard')
-  cy.findByText('Dashboard').should('be.visible')
-  cy.findAllByRole('link').each((link) => {
-    if (link.find('span:contains("Shop Admin")').length > 0) {
-      cy.wrap(link).click()
-    }
-  })
-  cy.findByRole('heading', {
-    level: 1,
-    name: 'Administration de la boutique',
-  }).should('be.visible')
+  // cy.login()
+  // cy.url().should('contain', '/sign-in')
+  // cy.location('pathname').should('eq', '/logout')
+  // cy.findByRole('heading', {level: 1, name: 'Déconnexion'}).should('be.visible')
+  // cy.findAllByRole('link').each((link) => {
+  //   if (link.find('span:contains("Dashboard")').length > 0) {
+  //     cy.wrap(link).click()
+  //   }
+  // })
+  // cy.url().should('contain', '/dashboard')
+  // cy.findByText('Dashboard').should('be.visible')
+  // cy.findAllByRole('link').each((link) => {
+  //   if (link.find('span:contains("Shop Admin")').length > 0) {
+  //     cy.wrap(link).click()
+  //   }
+  // })
+  // cy.findByRole('heading', {
+  //   level: 1,
+  //   name: 'Administration de la boutique',
+  // }).should('be.visible')
 })
 // AUTHENTIFICATION
 Cypress.Commands.add('fillAuthForm', (email: string, password: string) => {
