@@ -84,33 +84,33 @@ Cypress.Commands.add(
     )
   }
 )
-// CRUD
-Cypress.Commands.add('createProduct', (product: CreateProduct) => {
-  cy.fillProductForm(product)
-  cy.findByRole('button', {name: 'Save'}).click()
-})
-Cypress.Commands.add('updateProduct', (product: CreateProduct) => {
-  cy.get('@product').findAllByRole('button', {name: 'Edit'}).click()
-  cy.fillProductForm(product, true)
-  cy.findByRole('button', {name: 'Save'}).click()
-})
-Cypress.Commands.add('deleteProduct', (productName: string) => {
-  cy.containProductTitle(productName, true)
-  cy.get('tbody').find('tr').as('product').contains(productName)
-  cy.get('@product').findAllByRole('button', {name: 'Delete'}).click()
-})
+// // CRUD
+// Cypress.Commands.add('createProduct', (product: CreateProduct) => {
+//   cy.fillProductForm(product)
+//   cy.findByRole('button', {name: 'Save'}).click()
+// })
+// Cypress.Commands.add('updateProduct', (product: CreateProduct) => {
+//   cy.get('@product').findAllByRole('button', {name: 'Edit'}).click()
+//   cy.fillProductForm(product, true)
+//   cy.findByRole('button', {name: 'Save'}).click()
+// })
+// Cypress.Commands.add('deleteProduct', (productName: string) => {
+//   cy.containProductTitle(productName, true)
+//   cy.get('tbody').find('tr').as('product').contains(productName)
+//   cy.get('@product').findAllByRole('button', {name: 'Delete'}).click()
+// })
 
-// PRODUCTS HELPERS
-Cypress.Commands.add(
-  'containProductTitle',
-  (productName: string, isContain: boolean = false) => {
-    cy.get('tbody').find('tr').as('rows')
-    cy.get('@rows').should(isContain ? 'contain' : 'not.contain', productName)
-  }
-)
-Cypress.Commands.add('containToastMessage', (message: string) => {
-  cy.findByRole('status').should('contain', message)
-})
+// // PRODUCTS HELPERS
+// Cypress.Commands.add(
+//   'containProductTitle',
+//   (productName: string, isContain: boolean = false) => {
+//     cy.get('tbody').find('tr').as('rows')
+//     cy.get('@rows').should(isContain ? 'contain' : 'not.contain', productName)
+//   }
+// )
+// Cypress.Commands.add('containToastMessage', (message: string) => {
+//   cy.findByRole('status').should('contain', message)
+// })
 
 // just for compilation
 export const justForCompil = ''
