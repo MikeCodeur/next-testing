@@ -53,8 +53,7 @@ Les concepts clés que nous allons aborder :
 Vous devez avoir un fichier de contexte, comme `WrapperContext`, qui fournit le thème à l'ensemble de l'application. Exemple simplifié :
 
 ```tsx
-tsx
-CopierModifier
+
 import {ThemeProvider} from 'next-themes';
 import React, {ReactNode} from 'react';
 
@@ -77,8 +76,6 @@ Voici une description détaillée des tests :
 ### **Test 1 : Le thème par défaut est `system`**
 
 ```tsx
-typescript
-CopierModifier
 it("Theme default is 'system'", async () => {
   const {result: themeResult} = renderHook(() => useTheme(), {
     wrapper: WrapperContext,
