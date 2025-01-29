@@ -3,8 +3,8 @@ import {describe, it, vi, beforeEach} from 'vitest'
 
 // 🐶 Mocke les DAO pour simuler les données
 vi.mock('@/db/repositories/product-repository', () => ({
-  getProductsDao: vi.fn(),
-  getCategoriesDao: vi.fn(),
+  // getProductsDao: vi.fn(),
+  // getCategoriesDao: vi.fn(),
 }))
 
 describe('[getProductsService] when called', () => {
