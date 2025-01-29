@@ -17,7 +17,7 @@ async function truncateTableIfExists(tableName: string) {
   console.log('tableExists:', tableExists)
   if (tableExists[0].exists) {
     await db.execute(
-      sql.raw(`TRUNCATE TABLE ${tableName} RESTART IDENTITY CASCADE`)
+      sql.raw(`TRUNCATE TABLE "${tableName}" RESTART IDENTITY CASCADE`)
     )
   }
 }
@@ -29,9 +29,9 @@ export async function truncateTables() {
     await truncateTableIfExists('product')
     await truncateTableIfExists('category')
     await truncateTableIfExists('todo')
-    await truncateTableIfExists('users')
-    await truncateTableIfExists('groups')
 
+    await truncateTableIfExists('groups')
+    await truncateTableIfExists('user')
     console.log('Tables truncated successfully')
   } catch (error: unknown) {
     if (error instanceof Error) {
