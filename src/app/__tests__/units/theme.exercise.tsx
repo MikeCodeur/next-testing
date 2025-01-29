@@ -1,6 +1,7 @@
 import {describe, it, expect, beforeEach, vi, afterEach} from 'vitest'
 import {useTheme} from 'next-themes'
-import {WrapperContext} from '../utils'
+// 🐶 importe le composant ThemeProvider
+//import {WrapperContext} from '../utils'
 import {act, renderHook} from '@testing-library/react'
 
 describe('Theme', () => {
@@ -20,20 +21,19 @@ describe('Theme', () => {
     })
   })
 
+  //🐶 Uitlise le WrapperContext
   afterEach(() => {
     window.localStorage.removeItem('theme')
   })
   it("Theme default is 'system'", async () => {
     const {result: themeResult} = renderHook(() => useTheme(), {
-      wrapper: WrapperContext,
+      //wrapper: WrapperContext,
     })
     expect(themeResult.current.theme).toBe('system')
   })
 
   it('Theme can be changed to light', async () => {
-    const {result: themeResult} = renderHook(() => useTheme(), {
-      wrapper: WrapperContext,
-    })
+    const {result: themeResult} = renderHook(() => useTheme(), {})
     expect(themeResult.current.theme).toBe('system')
 
     act(() => {
@@ -43,9 +43,7 @@ describe('Theme', () => {
   })
 
   it('Theme can be changed to dark', async () => {
-    const {result: themeResult} = renderHook(() => useTheme(), {
-      wrapper: WrapperContext,
-    })
+    const {result: themeResult} = renderHook(() => useTheme(), {})
     expect(themeResult.current.theme).toBe('system')
 
     act(() => {
