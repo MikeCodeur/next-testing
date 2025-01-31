@@ -1,8 +1,14 @@
 # Test de la couche validation (Zod)
 
-### 💡 Description longue de l'exercice
+### 💡 Lancer des tests validation
 
-Dans cette section, tu vas tester les schémas de validation de ton application avec **Zod**. Les schémas de validation garantissent que les données envoyées à ton service respectent les formats et contraintes attendus. Ces tests sont essentiels pour sécuriser et fiabiliser la couche de validation de ton application.
+## 📝 Tes notes
+
+Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template).
+
+## Comprendre
+
+Dans cette section, tu vas tester les schémas de validation de ton application avec **`Zod`**. Les schémas de validation garantissent que les données envoyées à ton service respectent les formats et contraintes attendus. Ces tests sont essentiels pour sécuriser et fiabiliser la couche de validation de ton application.
 
 L’objectif de cet exercice est de valider trois schémas principaux :
 
@@ -12,17 +18,9 @@ L’objectif de cet exercice est de valider trois schémas principaux :
 
 Tu commenceras par tester les cas de base, comme des champs requis ou invalides, puis tu ajouteras des cas avancés dans les bonus.
 
-## 📝 Tes notes
-
-Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template).
-
-## Comprendre
-
-Voici un exemple de schéma Zod simple pour valider un objet produit :
+Voici un exemple de schéma `Zod` simple pour valider un objet produit :
 
 ```jsx
-javascript
-CopierModifier
 import {z} from 'zod'
 
 const productSchema = z.object({
@@ -35,18 +33,16 @@ const productSchema = z.object({
 
 Le schéma ci-dessus définit les contraintes suivantes :
 
-- `id` doit être une chaîne au format UUID.
+- `id` doit être une chaîne au format `UUID`.
 - `title` doit être une chaîne avec au moins 2 caractères.
 - `description` doit également avoir au moins 2 caractères.
 - `price` doit être un nombre.
 
 📑 Le lien vers la doc [Zod Documentation](https://zod.dev/).
 
-Dans cet exercice, tu utiliseras **Vitest** pour écrire des tests et vérifier que ces schémas se comportent correctement.
-
----
-
 ## Exercice
+
+Dans cet exercice, tu utiliseras **`Vitest`** pour écrire des tests et vérifier que ces schémas se comportent correctement.
 
 ### Tests à réaliser :
 
@@ -60,11 +56,9 @@ Dans cet exercice, tu utiliseras **Vitest** pour écrire des tests et vérifier 
      - La description est trop courte (moins de 2 caractères).
      - Des champs requis comme `category`, `title`, ou `description` sont manquants.
 
-### Fichiers
+Fichiers
 
 - `src/services/__tests__/product-validation.test.ts`
-
----
 
 ## Bonus
 
@@ -75,11 +69,9 @@ Ajoute des tests pour valider que :
 1. Les champs optionnels comme `id`, `createdAt`, et `quantity` sont acceptés.
 2. Les champs numériques passés en chaîne (`"299.99"`) sont convertis en nombres.
 
-### Fichiers
+Fichiers
 
 - `src/services/__tests__/product-validation.test.ts`
-
----
 
 ### 2. 🚀 Valider la mise à jour avec `updateProductServiceShema`
 
@@ -88,19 +80,15 @@ Ajoute des tests pour valider que :
 1. Les données sont acceptées avec un `id` valide et des champs optionnels (`createdAt`, `quantity`).
 2. Les données sont rejetées si :
    - L'`id` est manquant.
-   - L'`id` est invalide (par exemple, un nombre au lieu d'une chaîne UUID).
+   - L'`id` est invalide (par exemple, un nombre au lieu d'une chaîne `UUID`).
 
-### Fichiers
+Fichiers
 
 - `src/services/__tests__/product-validation.test.ts`
 
----
-
 ## Aller plus loin
 
-📑 Le lien vers la documentation Zod [Zod Documentation](https://zod.dev/).
-
----
+📑 Le lien vers la doc [Zod Documentation](https://zod.dev/).
 
 ## Ils vont t’aider
 
@@ -110,85 +98,6 @@ Ajoute des tests pour valider que :
 - **⛏️ Hulk le Marteau** : _Quand tu devras simplifier ton schéma ou ton code._
 - **👨‍✈️ Hugo le chef de projet** : _Hugo t’aidera sur les spécifications des schémas._
 
----
-
 ## 🐜 Feedback
 
-Remplis le formulaire de [FeedBack](https://go.mikecodeur.com/cours-react-avis).
-
-```jsx
-jsx
-CopierModifier
-https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Test%20Service%20Validation&entry.533578441=05%20Validation%20Schemas
-
-```
-
----
-
-Dis-moi si
-
-# itre principal de l'exercice
-
-### 💡 Description longue de l'exercice
-
-## 📝 Tes notes
-
-Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
-
-## Comprendre
-
-Un hello world en HTML:
-
-```html
-<html>
-  <body>
-    <div>Hello World</div>
-  </body>
-</html>
-```
-
-📑 Le liens vers la doc [https://fr.reactjs.org/docs/getting-started.html](https://fr.reactjs.org/docs/getting-started.html)
-
-Des frameworks JavaScript modernes ont donc été créés pour relever certains des défis en créant par programme le DOM plutôt que de le définir à la main HTML.
-
-## Exercice
-
-Il est important d’avoir une compréhension de base de la façon de générer et d’interagir avec des nœuds DOM en utilisant JavaScript car cela vous aidera à comprendre comment React fonctionne un peu mieux sous le capot. Donc, dans cet exercice, nous ne sommes en fait pas va utiliser React du tout. Au lieu de cela, nous allons utiliser JavaScript pour créer un `div` nœud DOM avec le texte “Hello World” et insérez ce nœud DOM dans le document.
-
-Fichiers
-
-- `exercise/about/page`
-
-## Bonus
-
-### 1. 🚀 Générer le Root Node
-
-Plutôt que d’avoir le nœud `root` dans le code HTML, voyez si vous pouvez créer celui-ci en utilisant également JavaScript.
-
-Fichiers
-
-- `exercise/about/page`
-
-### 2. 🚀 Bonus 2
-
-2Plutôt que d’avoir le nœud `root` dans le code HTML, voyez si vous pouvez créer celui-ci en utilisant également JavaScript.
-
-Fichiers
-
-- `exercise/about/page`
-
-## Aller plus loin
-
-📑 Le lien vers la doc [https://www.w3schools.com/html/html_css.asp](https://www.w3schools.com/html/html_css.asp)
-
-## Ils vont t’aider
-
-- **🐶 Mowgli le Chien** : _Mowgli te guidera dans chaque exercice._
-- **🤖 Ash le Robot** : _Ash le Robot te donnera du code utile._
-- **🚀 Julia La roquette** : _Julia te donnera des défis supplémentaires._
-- **⛏️ Hulk le Marteau** : _Quand du code à supprimer est présent_
-- **👨‍✈️ Hugo le chef de projet** : _Va t'aider sur les spécifications du projet_
-
-## 🐜 Feedback
-
-Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-react-avis).
+Remplis [le formulaire de feedback](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Test%20Service%20Validation&entry.533578441=04%20test%20couche%20Validation).

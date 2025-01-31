@@ -18,7 +18,7 @@ describe('Product Validation Schemas', () => {
 
     it('should reject invalid id', () => {
       const invalidData = {
-        //🐶 utilise un ID invalide
+        //🐶 Utilise un `ID` invalide
       }
       const result = deleteProductServiceSchema.safeParse(invalidData)
       expect(result.success).toBe(false)
@@ -34,13 +34,13 @@ describe('Product Validation Schemas', () => {
     }
 
     it('should validate correct create product data', () => {
-      //🐶 appel createEditProductServiceSchema avec les données valides
+      //🐶 Appelle `createEditProductServiceSchema` avec les données valides
     })
 
     it('should reject invalid title length', () => {
       const invalidProduct = {
         ...validProduct,
-        // 🐶 met un title trop court
+        // 🐶 Mets un `title` trop court
       }
       const result = createEditProductServiceSchema.safeParse(invalidProduct)
       expect(result.success).toBe(false)
@@ -54,7 +54,7 @@ describe('Product Validation Schemas', () => {
     it('should reject invalid description length', () => {
       const invalidProduct = {
         ...validProduct,
-        // 🐶 met un description trop court
+        // 🐶 Mets une `description` trop courte
       }
       const result = createEditProductServiceSchema.safeParse(invalidProduct)
       expect(result.success).toBe(false)
@@ -68,7 +68,7 @@ describe('Product Validation Schemas', () => {
     it('should reject missing required fields', () => {
       const invalidProduct = {
         price: 299.99,
-        // 🐶 missing category, title, and description
+        // 🐶 Missing category, title, and description
       }
       const result = createEditProductServiceSchema.safeParse(invalidProduct)
       expect(result.success).toBe(false)
