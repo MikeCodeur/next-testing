@@ -1,26 +1,22 @@
 # Test de la couche service (avec DAO mocké)
 
-### 💡 Description longue de l'exercice
-
-Dans cette section, tu vas tester les fonctions de service utilisées pour gérer les produits. Ces services interagissent avec la couche DAO (Data Access Object) pour effectuer les opérations sur les données. L'objectif est de s'assurer que chaque service fonctionne correctement et respecte les règles d'autorisation définies.
-
-Tu utiliseras **Vitest** pour écrire et exécuter les tests, et tu apprendras à :
-
-1. Mocker la couche DAO pour simuler des appels à la base de données.
-2. Tester les autorisations en fonction des rôles utilisateur.
-3. Valider les comportements pour différents scénarios (succès, échec, permissions).
-
----
+### 💡 Tester la couche service avec `Vitest`
 
 ## 📝 Tes notes
 
 Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template).
 
----
-
 ## Comprendre
 
-Voici un exemple de mock simple en Vitest :
+Dans cette section, tu vas tester les fonctions de service utilisées pour gérer les produits. Ces services interagissent avec la couche `DAO` (`Data Access Object`) pour effectuer les opérations sur les données. L'objectif est de s'assurer que chaque service fonctionne correctement et respecte les règles d'autorisation définies.
+
+Tu utiliseras **`Vitest`** pour écrire et exécuter les tests, et tu apprendras à :
+
+1. Mocker la couche `DAO` pour simuler des appels à la base de données.
+2. Tester les autorisations en fonction des rôles utilisateur.
+3. Valider les comportements pour différents scénarios (succès, échec, permissions).
+
+Voici un exemple de `mock` simple en `Vitest` :
 
 ```jsx
 vi.mock('@/db/repositories/product-repository', () => ({
@@ -35,29 +31,25 @@ vi.mocked(productRepository).getProductsDao.mockResolvedValue([
 ])
 ```
 
-📑 Le lien vers la doc officielle de Vitest Mocking.
-
----
+📑 Le lien vers la doc [Vitest Mocking](https://vitest.dev/guide/mocking.html#mocking).
 
 ## Exercice
 
 Dans cet exercice, tu dois tester les services suivants :
 
-### 1. **`getProductsService`** (Lecture des produits)
+**1. `getProductsService` (Lecture des produits)**
 
 - Mocke le DAO `getProductsDao` pour simuler une liste de produits.
 - Vérifie que tout le monde (tous les rôles) peut appeler ce service.
 
-### 2. **`getCategoriesService`** (Lecture des catégories)
+**2. `getCategoriesService` (Lecture des catégories)**
 
 - Mocke le DAO `getCategoriesDao` pour simuler une liste de catégories.
 - Vérifie que tout le monde (tous les rôles) peut appeler ce service.
 
-**Fichiers à utiliser :**
+Fichiers
 
 - `exercise/services/product-service-mocked.exercise.js`
-
----
 
 ## Bonus
 
@@ -69,11 +61,9 @@ Ajoute des tests pour la création de produit :
 - Vérifie qu'un utilisateur avec le rôle `ADMIN` peut créer un produit.
 - Mocke le DAO `createProductDao` pour valider son appel avec les bons arguments.
 
-**Fichiers à utiliser :**
+**Fi**chiers
 
 - `exercise/services/product-service-mocked.bonus-1.js`
-
----
 
 ### 2. 🚀 **`updateProductService`**
 
@@ -83,17 +73,13 @@ Ajoute des tests pour la mise à jour de produit :
 - Vérifie qu'un utilisateur avec le rôle `ADMIN` peut mettre à jour un produit.
 - Mocke le DAO `updateProductDao` pour valider son appel avec les bons arguments.
 
-**Fichiers à utiliser :**
+Fichiers
 
 - `exercise/services/product-service-mocked.bonus-2.js`
 
----
-
 ## Aller plus loin
 
-📑 Le lien vers la doc pour Mocker les modules en JavaScript.
-
----
+📑 Le lien vers la doc [Vitest Mocking](https://vitest.dev/guide/mocking.html#mocking)
 
 ## Ils vont t’aider
 
@@ -103,8 +89,6 @@ Ajoute des tests pour la mise à jour de produit :
 - **⛏️ Hulk le Marteau** : _Quand du code à supprimer est présent._
 - **👨‍✈️ Hugo le chef de projet** : _Va t’aider sur les spécifications du projet._
 
----
-
 ## 🐜 Feedback
 
-Remplis le [formulaire de FeedBack](https://go.mikecodeur.com/cours-react-avis).
+Remplis le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=05%20Test%20service%20DAO).
