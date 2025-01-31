@@ -54,5 +54,5 @@ describe('Theme', () => {
     expect(themeResult.current.theme).toBe('dark')
   })
 })
-//juste pour l'exercice
+//Juste pour l'exercice
 export const justForCompile = 'justForCompile'

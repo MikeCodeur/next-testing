@@ -32,5 +32,5 @@ describe('Home', () => {
   })
 })
 
-//juste pour l'exercice
+//Juste pour l'exercice
 export const justForCompile = 'justForCompile'

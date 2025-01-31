@@ -139,5 +139,5 @@ describe('[updateProductService] when called', () => {
     expect(productRepository.updateProductDao).toBeCalledTimes(1)
   })
 })
-//juste pour l'exercice
+//Juste pour l'exercice
 export const justForCompile = 'justForCompile'

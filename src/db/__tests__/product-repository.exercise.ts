@@ -15,14 +15,14 @@ import {
 describe.sequential('CRUD operations for Product', () => {
   beforeAll(async () => {
     // 🐶 Assure-toi que la base de données est initialisée avant de lancer les tests
-    // 🤖 Utilise la fonction initDrizzle()
+    // 🤖 Utilise la fonction `initDrizzle()`
     // await initDrizzle()
   })
 
   test('should create a new product with category', async () => {
     // 🐶 Crée une nouvelle catégorie pour le produit
     const newCategory = {name: 'Test Category'}
-    // 🐶 Utilise createCategoryDao pour créer une catégorie dans la base de données
+    // 🐶 Utilise `createCategoryDao` pour créer une catégorie dans la base de données
     //const categoryCreated = await createCategoryDao(newCategory)
     // 🐶 Vérifie que la catégorie créée correspond bien aux données fournies
     //expect(categoryCreated).toMatchObject(newCategory)
@@ -36,7 +36,7 @@ describe.sequential('CRUD operations for Product', () => {
       //category: categoryCreated.id, // 🐶 Utilise l'ID de la catégorie créée
       quantity: 10,
     }
-    // 🐶 Utilise createProductDao pour créer un produit dans la base de données
+    // 🐶 Utilise `createProductDao` pour créer un produit dans la base de données
     //const createdProduct = await createProductDao(newProduct)
     // 🐶 Vérifie que le produit créé correspond bien aux données fournies
     //expect(createdProduct).toMatchObject(newProduct)
@@ -46,7 +46,7 @@ describe.sequential('CRUD operations for Product', () => {
     // 🐶 Récupère la liste des produits existants
     const products = await getProductsDao()
     console.log('products', products)
-    // 🐶 Utilise getProductByNameDao pour récupérer un produit par son titre
+    // 🐶 Utilise `getProductByNameDao` pour récupérer un produit par son titre
     //const product = await getProductByNameDao(products[0].title || '')
 
     // 🐶 Vérifie que le produit récupéré est défini et correspond au produit attendu
@@ -66,7 +66,7 @@ describe.sequential('CRUD operations for Product', () => {
       image: 'updated_image_url',
       quantity: 15,
     }
-    // 🐶 Utilise updateProductDao pour mettre à jour les données dans la base
+    // 🐶 Utilise `updateProductDao` pour mettre à jour les données dans la base
 
     // 🐶 Vérifie que le produit a bien été mis à jour
     // expect(updatedProduct.title).toBe('Updated Product Title')
@@ -78,7 +78,7 @@ describe.sequential('CRUD operations for Product', () => {
     const products = await getProductsDao()
     const productToDelete = {id: products[0].id}
 
-    // 🐶 Utilise deleteProductDao pour supprimer le produit
+    // 🐶 Utilise `deleteProductDao` pour supprimer le produit
 
     // 🐶 Vérifie que le produit n'existe plus dans la base de données
     const deletedProduct = await getProductByNameDao(productToDelete.id || '')

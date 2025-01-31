@@ -1,27 +1,27 @@
 # Tests de la persistance
 
-### 💡 Tester la couche de persistance (Sans Mock)
+### 💡 Tester la couche de persistance (Sans `Mock`)
 
 ## 📝 Tes notes
 
-Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
+Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
 
 ## Comprendre
 
-Dans la section précédente nous avons tester les services en `mockant` la persistance. Cela permet de tester la logique métier, autorisation, validation etc … Mais on ne peut pas détecter d’éventuelle problème SQL car rien n’est exécuté.
+Dans la section précédente, nous avons testé les services en `mockant` la persistance. Cela permet de tester la logique métier, autorisation, validation etc… Mais on ne peut pas détecter d’éventuels problèmes SQL, car rien n’est exécuté.
 
-Plusieurs approche existe pour résoudre ce problème
+Plusieurs approches existent pour résoudre ce problème :
 
-- Avoir un BDD dédiée à l’exécution des tests
-- Avoir un utilitaire qui permet d’avoir une BDD proche de Postgres embarqué comme
+- Avoir une `BDD` dédiée à l’exécution des tests
+- Avoir un utilitaire qui permet d’avoir une `BDD` proche de `Postgres` embarquée comme
   - [pg-mem](https://www.npmjs.com/package/pg-mem)
   - [test-container](https://testcontainers.com/modules/postgresql/)
 
-### Nous allons dans un premier ici faire nos tests avec un BDD Postgres dédiée
+Dans un premier temps, nous allons ici faire nos tests avec une `BDD` `Postgres` dédiée
 
 - Etape 1 :
 
-Nous allons donc nous assurer d’avoir un URL pour la base de tests `.env.test`
+Nous allons donc nous assurer d’avoir une `URL` pour la base de tests `.env.test`
 
 ```bash
 #.env.test
@@ -53,9 +53,9 @@ export default db
 
 - Etape 2 :
 
-Il nous faut un fichier de configuration `drizzle` spécial pour les tests avec une initialisation des variables d’environnements pour l’environnements de tests.
+Il nous faut un fichier de configuration `drizzle` spécial pour les tests avec une initialisation des variables d’environnement pour l’environnement de tests.
 
-Note : L’url pourrait être mise en dur dans `url:` pour être sur à 100% qu’un autre environnement n’est pas chargé
+Note : L’`URL` pourrait être mise en dur dans `url:` pour être sûr à 100% qu’un autre environnement n’est pas chargé
 
 ```tsx
 import {defineConfig} from 'drizzle-kit'
@@ -75,10 +75,9 @@ export default defineConfig({
     casing: 'camel',
   },
 })
-
 ```
 
-- Etape 3 : Avoir des scripts permettant d’avoir un base de données vide entre chaque tests, par exemple
+- Etape 3 : Avoir des scripts permettant d’avoir une base de données vide entre chaque test, par exemple :
 
 ```tsx
 beforeAll(async () => {
@@ -92,14 +91,13 @@ export async function initDrizzle() {
     await truncateTables() // truncate toutes les tables
   }
 }
-
 ```
 
-Note : Ces fonctions seront fournis pour la suite de l’exercice.
+Note : Ces fonctions seront fournies pour la suite de l’exercice.
 
 ## Exercice
 
-Dans cet exercice il y a un test qui permet de tester la creation d’un utilisateur
+Dans cet exercice, il y a un test qui permet de tester la création d’un utilisateur
 
 ```tsx
 test('should create a new user', async () => {
@@ -119,7 +117,7 @@ test('should create a new user', async () => {
   })
 ```
 
-Pour rappel : l’email doit etre unique dans la table `email: text('email').unique()`
+Pour rappel : l’email doit être unique dans la table `email: text('email').unique()`
 
 ```tsx
 export const users = pgTable('user', {
@@ -129,15 +127,15 @@ export const users = pgTable('user', {
   email: text('email').unique(),
 ```
 
-Ce qui veut dire que si un test s’exécute à nouveau un error apparaitra
+Ce qui veut dire que si un test s’exécute à nouveau, une erreur apparaitra.
 
 ```tsx
 PostgresError: duplicate key value violates unique constraint "user_email_unique"
 ```
 
-- **🐶Dans cet exercice tu devoir dans un premier temps appeler** `initDrizzle` avant chaque test
-  - `generateDb` (génère les script sql : `drizzle-kit generate`)
-  - `migrateDb` (génère les script sql : `drizzle-kit migrate`)
+- **🐶**Dans cet exercice, tu vas devoir, dans un premier temps, appeler \*\*\*\*`initDrizzle` avant chaque test
+  - `generateDb` (génère les scripts sql : `drizzle-kit generate`)
+  - `migrateDb` (génère les scripts sql : `drizzle-kit migrate`)
   - `truncateTables` (vide toutes les tables)
 
 ```tsx
@@ -150,7 +148,7 @@ export async function initDrizzle() {
 }
 ```
 
-- **🐶 Continue sur tous les test de users**
+- **🐶** Continue sur tous les test de `users`
 
 ### **Liste des tests :**
 
@@ -186,7 +184,7 @@ Fichiers
 
 ### 1. 🚀 Test ProductRepository
 
-- **🐶 Implémente les tests product**
+- **🐶 Implémente les tests `product`**
 
 ### **Liste des tests :**
 
@@ -218,9 +216,9 @@ Fichiers
 
 - `src/db/__tests__/product-repository.test.ts`
 
-### 2. 🚀 Bonus 2
+### 2. 🚀 Nœud `root`
 
-2Plutôt que d’avoir le nœud `root` dans le code HTML, voyez si vous pouvez créer celui-ci en utilisant également JavaScript.
+Plutôt que d’avoir le nœud `root` dans le code HTML, vois si tu peux le créer en utilisant également JavaScript.
 
 Fichiers
 
@@ -240,4 +238,4 @@ Fichiers
 
 ## 🐜 Feedback
 
-Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=06%20Tests-peristance).
+Remplir le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=06%20Tests-peristance).
