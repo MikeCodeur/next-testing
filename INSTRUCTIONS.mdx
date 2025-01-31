@@ -1,16 +1,18 @@
-# configurer Vitest + Next
+# Configurer Vitest + Next
 
-### 💡 Description longue de l'exercice
+### 💡 Comprendre la config de Vitest
 
 ## 📝 Tes notes
 
-Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
+Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
 
 ## Comprendre
 
-Nous allons utiliser `Vitest` comme utilitaire de test [https://vitest.dev/](https://vitest.dev/) Vitest est un framework de test rapide et intégré à Vite, idéal pour les projets React modernes.
+Nous allons utiliser `Vitest` comme utilitaire de test [https://vitest.dev/](https://vitest.dev/)
 
-### Dependances
+`Vitest` est un framework de test rapide et intégré à `Vite`, idéal pour les projets `React` modernes.
+
+### Dépendances
 
 ```tsx
  "@faker-js/faker": "^9.0.3",
@@ -48,16 +50,15 @@ export default defineConfig({
     fileParallelism: false,
   },
 })
-
 ```
 
-Voici les points clés de cette configuration
+Voici les points clés de cette configuration :
 
 1. **Plugins :**
-   - `react()` : Support React avec JSX et Fast Refresh.
+   - `react()` : Support `React` avec `JSX` et `Fast Refresh`.
    - `tsconfigPaths()` : Résolution automatique des alias définis dans `tsconfig.json`.
 2. **Tests :**
-   - **Environnement `jsdom`** : Simule un DOM pour tester React ou tout ce qui interagit avec le navigateur.
+   - **Environnement `jsdom`** : Simule un `DOM` pour tester `React` ou tout ce qui interagit avec le navigateur.
    - **`setupFiles`** : Charge un fichier pour configurer des globales ou mocker des modules avant les tests.
    - **Fichiers inclus :** Tous les fichiers `.test.ts/tsx` sont détectés automatiquement.
 3. **Extras :**
@@ -66,7 +67,7 @@ Voici les points clés de cette configuration
 
 C’est une config simple, puissante et optimisée pour démarrer rapidement avec des tests modernes.
 
-Le setup contenant `import '@testing-library/jest-dom/vitest'` sert à enrichir les capacités de test en ajoutant des **matchers personnalisés** pour tester plus facilement le DOM dans les projets React
+Le setup contenant `import '@testing-library/jest-dom/vitest'` sert à enrichir les capacités de test en ajoutant des **`matchers` personnalisés** pour tester plus facilement le `DOM` dans les projets `React`
 
 ```tsx
 //setup-test.ts
@@ -76,9 +77,9 @@ import '@testing-library/jest-dom/vitest'
 
 ## Exercice
 
-Dans un premier temps vérifie que l’environnement JS et JSDOM s’exécute correctement
+Dans un premier temps, vérifie que l’environnement `JS` et `JSDOM` s’exécutent correctement.
 
-Pour cela nous avons Un jeu de test contenant deux tests
+Pour cela, nous avons un jeu de test contenant deux tests :
 
 ```tsx
 import {describe, it, expect} from 'vitest'
@@ -103,14 +104,12 @@ describe('Environment Test', () => {
 
 ```
 
-- **🐶 Edite `setup-test` pour faire ne sorte que `@testing-library/jest-dom/vitest` soit utilisé**
+- **🐶** Edite `setup-test` pour faire en sorte que `@testing-library/jest-dom/vitest` soit utilisé.
 
 Fichiers
 
 - `src/__tests__/setup-test.ts`
 - `vitest.config.ts`
-
-##
 
 ## Aller plus loin
 
@@ -126,4 +125,4 @@ Fichiers
 
 ## 🐜 Feedback
 
-Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=01%20Config).
+Remplir le formulaire [de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=01%20Config%20Vitest+Next).
