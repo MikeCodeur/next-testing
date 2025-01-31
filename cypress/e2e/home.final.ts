@@ -42,5 +42,5 @@ describe('Home page', () => {
     cy.url().should('contain', '/dashboard')
   })
 })
-// just for compilation
+// Just for compilation
 export const justForCompil = ''

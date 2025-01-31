@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import '@testing-library/cypress/add-commands' // ajout des extensions de testing library
+import '@testing-library/cypress/add-commands' // Ajout des extensions de `testing library`
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -9,7 +9,7 @@ import '@testing-library/cypress/add-commands' // ajout des extensions de testin
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-// variable env pour les tests de cypress
+// Variable env pour les tests de `cypress`
 const {email, password} = Cypress.env()
 
 // -- This is a parent command --
@@ -60,5 +60,5 @@ Cypress.Commands.add('login', () => {
   cy.findByRole('button', {name: 'Login'}).click()
 })
 
-// just for compilation
+// Just for compilation
 export const justForCompil = ''

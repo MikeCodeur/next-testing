@@ -11,5 +11,5 @@ describe('Server Component', () => {
   })
 })
 
-// just for compilation
+// Just for compilation
 export const justForCompil = ''

@@ -46,7 +46,7 @@ describe('CRUD operations for Product', () => {
   it('Update product', () => {
     cy.visitShopAdmin()
     cy.containProductTitle(product.title, true)
-    // cherche le produit déja créer
+    // Cherche le produit déja créé
     cy.get('tbody').find('tr').as('product').contains(product.title)
     cy.updateProduct(updateProduct)
     cy.containToastMessage('Product saved')
@@ -61,5 +61,5 @@ describe('CRUD operations for Product', () => {
     cy.containProductTitle(updateProduct.title)
   })
 })
-// just for compilation
+// Just for compilation
 export const justForCompil = ''

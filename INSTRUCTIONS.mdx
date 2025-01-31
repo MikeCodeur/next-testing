@@ -4,15 +4,15 @@
 
 ## 📝 Tes notes
 
-Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
+Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
 
 ## Comprendre
 
-Les tests End-to-End (E2E) sont conçus pour valider le fonctionnement global d'une application, du front-end au back-end, en passant par toutes les couches intermédiaires. Contrairement aux tests unitaires ou d'intégration, les tests E2E simulent le parcours réel d'un utilisateur, en interagissant avec l'interface utilisateur et en testant les fonctionnalités dans leur ensemble.
+Les tests End-to-End (`E2E`) sont conçus pour valider le fonctionnement global d'une application, du `front-end` au `back-end`, en passant par toutes les couches intermédiaires. Contrairement aux tests unitaires ou d'intégration, les tests `E2E` simulent le parcours réel d'un utilisateur, en interagissant avec l'interface utilisateur et en testant les fonctionnalités dans leur ensemble.
 
-Avec [**Cypress**](https://docs.cypress.io/app/get-started/install-cypress), un outil populaire pour les tests E2E, nous pouvons écrire des tests rapides et robustes qui imitent les actions de l'utilisateur (clics, remplissage de formulaires, navigation). L'objectif est de garantir que l'application répond correctement aux interactions utilisateur et fonctionne comme prévu dans un environnement proche de la production.
+Avec [**Cypress**](https://docs.cypress.io/app/get-started/install-cypress), un outil populaire pour les tests `E2E`, nous pouvons écrire des tests rapides et robustes qui imitent les actions de l'utilisateur (clics, remplissage de formulaires, navigation). L'objectif est de garantir que l'application répond correctement aux interactions utilisateur et fonctionne comme prévu dans un environnement proche de la production.
 
-Dans cette section, nous allons explorer comment configurer et utiliser Cypress pour tester votre application de manière complète et fiable.
+Dans cette section, nous allons explorer comment configurer et utiliser `Cypress` pour tester notre application de manière complète et fiable.
 
 - Dépendances
 
@@ -26,30 +26,24 @@ Dans cette section, nous allons explorer comment configurer et utiliser Cypress 
 pnpm dlx cypress install
 ```
 
-📑 Le liens vers la doc [https://docs.cypress.io/app/get-started/install-cypress](https://docs.cypress.io/app/get-started/install-cypress)
+📑 Le lien vers la doc [https://docs.cypress.io/app/get-started/install-cypress](https://docs.cypress.io/app/get-started/install-cypress)
 
 Les tests E2E doivent reproduire **les conditions réelles** pour garantir que l'application fonctionne de bout en bout. L’objectif est de valider **toutes les couches** (UI, API, base de données) à travers des scénarios proches de l’expérience utilisateur.
 
----
-
 ### **Principes clés :**
 
-1. **Limitation des Mocks** :
-   - Les mocks et conteneurs sont minimisés. On teste un système complet, proche de la production.
+1. **Limitation des `Mocks`** :
+   - Les `mocks` et conteneurs sont minimisés. On teste un système complet, proche de la production.
 2. **Actions utilisateur complètes** :
-   - Les interactions (clics, formulaires) sont simulées via un **navigateur embarqué** (Cypress, Playwright).
+   - Les interactions (clics, formulaires) sont simulées via un **navigateur embarqué** (`Cypress`, `Playwright`).
    - Chaque action doit inclure toutes les étapes : interface, API, persistance.
 3. **Validation de bout en bout** :
    - Les données doivent circuler correctement entre présentation, logique métier et stockage, pour éviter des surprises en production.
-
----
 
 ### **Exemple pratique :**
 
 - L’utilisateur se connecte, ajoute un produit au panier, passe une commande.
 - Le test vérifie les interactions UI, les réponses API et l’enregistrement dans la base de données.
-
----
 
 ### **Pourquoi cette approche ?**
 
@@ -57,7 +51,7 @@ Les tests E2E doivent reproduire **les conditions réelles** pour garantir que l
 - **Expérience utilisateur** : Valide les flux critiques.
 - **Proximité production** : Réduit les bugs en prod.
 
-## Cypress : Exemple de Tests
+**`Cypress` : Exemple de Tests**
 
 ```tsx
 describe('Home Page - Basics', () => {
@@ -74,13 +68,13 @@ describe('Home Page - Basics', () => {
 });
 ```
 
-## Cypress : Les modes
+### **`Cypress` : Les modes**
 
-Deux modes sont disponibles avec Cypress :
+Deux modes sont disponibles avec `Cypress` :
 
 - Interactif
 
-`Cypress` lance une interface graphique qui permet de visualiser concrètement les tests, quelles pages, actions etc … C’est utilise pour creer les tests en local
+`Cypress` lance une interface graphique qui permet de visualiser concrètement les tests, quelles pages, actions etc… C’est utilise pour créer les tests en local
 
 ```bash
 npx cypress open
@@ -90,7 +84,7 @@ npx cypress open
 
 - headless : (sans écran)
 
-Utilise pour exécuter les tests dans un terminal ou sur un CI
+Utilise pour exécuter les tests dans un terminal ou sur un `CI`
 
 ```bash
 npx cypress run
@@ -98,7 +92,7 @@ npx cypress run
 "e2e:ci": "cypress run",
 ```
 
-⚠️ Cypress va se connecter sur un Server pour exécuter les tests
+⚠️ `Cypress` va se connecter sur un Server pour exécuter les tests
 
 ```tsx
 import {defineConfig} from 'cypress'
@@ -123,7 +117,7 @@ export default defineConfig({
 //CYPRESS_PASSWORD='MDp'
 ```
 
-## Préparer le build (env test)
+### **Préparer le `build` (`env test`)**
 
 Pour préparer un `build` de production mais avec un environnement de tests
 
@@ -132,53 +126,52 @@ Pour préparer un `build` de production mais avec un environnement de tests
  "start:test": "dotenv -e .env.test -- next start",
 ```
 
-## start-server-and-test
+### **start-server-and-test**
 
 Pour démarrer un server et lancer les tests nous utiliseront un utilitaire : `start-server-and-test`, celui ci permet de
 
-- lancer une commande qui démarre le server
+- Lancer une commande qui démarre le serveur
 - Attendre que l’adresse réponde
-- Lancer un commande de test
+- Lancer une commande de test
 
 ```bash
 start-server-and-test <commande_server> http://127.0.0.1:3000 <commande_tests>
 ```
 
 ```bash
-
  "e2e:test": "start-server-and-test start:test http://127.0.0.1:3000 e2e",
 ```
 
-## **Récap des commandes tests**
+### **Récap des commandes tests**
 
-- Lancement des tests avec vitest:
+- Lancement des tests avec `vitest`:
   ```bash
   pnpm test
   ```
-- Lancement des tests e2e avec affichage (reset db + build):
+- Lancement des tests `e2e` avec affichage (reset db + build):
   ```bash
   pnpm e2e:test-clean
   ```
-- Lancement des tests e2e avec affichage (sans reset db + build):
+- Lancement des tests `e2e` avec affichage (sans reset db + build):
   ```bash
   pnpm e2e:test
   ```
-- Lancement des tests e2e en CLI seulement (avec reset db + build):
+- Lancement des tests `e2e` en `CLI` seulement (avec reset db + build):
   ```bash
   pnpm e2e:test-clean-ci
   ```
-- Lancement des tests e2e en CLI seulement (sans reset db + build):
+- Lancement des tests `e2e` en `CLI` seulement (sans reset db + build):
   ```bash
   pnpm e2e:test-ci
   ```
 
 ## Exercice
 
-Dans cet exercice tu vas devoir tester la home avec des fonctions basiques de l’api de `cypress`
+Dans cet exercice, tu vas devoir tester la `home` avec des fonctions basiques de l’api de `cypress`
 
 - `cy.visit('/')`
 - `cy.get('p')`
-- etc …
+- etc…
 
 Fichiers
 
@@ -186,19 +179,19 @@ Fichiers
 
 ## Bonus
 
-### 1. 🚀 Commandes personnalisés
+### 1. 🚀 Commandes personnalisées
 
 Il y a des actions que l’on doit répéter souvent dans nos tests : Exemple
 
 - Aller sur la page de connexion
-- Entrer le login pass
+- Entrer le login password
 - Se connecter
 - Vérifier que l’on est bien connecté
-- etc …
+- etc…
 
-Répéter ces étapes sur chaque tests peut vite alourdir les tests. Cela duplique beaucoup de code et c’est difficile à maintenir.
+Répéter ces étapes sur chaque test peut vite alourdir les tests. Cela duplique beaucoup de code et c’est difficile à maintenir.
 
-Exemple commun a beaucoup de tests coté connecté (`dashboard`)
+Exemple commun à beaucoup de tests côté connecté (`dashboard`)
 
 ```tsx
 it('Connection Dashboard', () => {
@@ -224,7 +217,7 @@ it('Connection Dashboard', () => {
   })
 ```
 
-Pour cela il existe les commandes personnalisées. Par exemple la commande `visitSignIn`
+Pour cela, il existe les commandes personnalisées. Par exemple la commande `visitSignIn`
 
 ```tsx
 //command.ts
@@ -256,17 +249,16 @@ declare global {
     }
   }
 }
-
 ```
 
-**🐶 Step 1 : Dans cet exercice tu vas devoir créé les commandes personnalisées suivantes :**
+**🐶 Step 1 :** Dans cet exercice, tu vas devoir créer les commandes personnalisées suivantes :
 
 - `visitShopAdmin` qui se base sur :
   - `visitSignIn`
   - `fillAuthForm` : Remplissage du formulaire login
   - `login` : Se connecte (clique button)
 
-**🐶 Step 2 : Utilise ces commandes personnalisées dans** `server-component.cy.ts` pour accéder a la page d’administration de la boutique
+**🐶 Step 2 :** Utilise ces commandes personnalisées dans \*\*\*\*`server-component.cy.ts` pour accéder à la page d’administration de la boutique.
 
 Fichiers
 
@@ -275,9 +267,9 @@ Fichiers
 
 ### 2. 🚀 CRUD Formulaire Product
 
-Maintenant que nous avons des commandes personnalisé pour ce connecté a l’administration. Nous allons pouvoir nous concentrer sur les tests fonctionnelles de la page admin shop. Les opérations que nous auront à répéter plusieurs fois sont liée au remplissage du formulaire produit.
+Maintenant que nous avons des commandes personnalisées pour se connecter à l’administration, nous allons pouvoir nous concentrer sur les tests fonctionnels de la page `admin` `shop`. Les opérations que nous auront à répéter plusieurs fois sont liées au remplissage du formulaire produit.
 
-**🐶** Step 1 : Dans cet exercice tu vas devoir créer les commandes personnalisées suivantes
+**🐶** Step 1 : Dans cet exercice, tu vas devoir créer les commandes personnalisées suivantes
 
 - `fillProductForm`
 - `createProduct`
@@ -286,20 +278,18 @@ Maintenant que nous avons des commandes personnalisé pour ce connecté a l’ad
 
   **🐶** Step 2 : Les tests
 
-### **Liste des tests pour "CRUD operations for Product"**
+**Liste des tests pour "`CRUD operations for Product`"**
 
-### **1. Lecture des produits existants ("Read product's list")**
+**1.** Lecture des produits existants (`"Read product's list"`)
 
 **Objectif** : Vérifier que la liste des produits existants est affichée correctement dans l'interface d'administration.
 
 - **Étapes** :
   1. Visiter la page d'administration des produits avec `cy.visitShopAdmin()`.
   2. Localiser le tableau contenant les produits (`tbody > tr`).
-  3. Vérifier que la liste contient un produit existant, comme "Wilson Pro Staff Tennis Racket".
+  3. Vérifier que la liste contient un produit existant, comme `"Wilson Pro Staff Tennis Racket"`.
 
----
-
-### **2. Création d'un produit ("Create product")**
+**2.** Création d'un produit (`"Create product"`)
 
 **Objectif** : Ajouter un nouveau produit à la liste des produits et vérifier qu'il est correctement sauvegardé.
 
@@ -310,9 +300,7 @@ Maintenant que nous avons des commandes personnalisé pour ce connecté a l’ad
   4. Vérifier qu'un message de confirmation s'affiche avec `cy.containToastMessage('Product saved')`.
   5. Confirmer que le nouveau produit est ajouté à la liste avec `cy.containProductTitle(product.title, true)`.
 
----
-
-### **3. Mise à jour d'un produit ("Update product")**
+**3.** Mise à jour d'un produit (`"Update product"`)
 
 **Objectif** : Modifier un produit existant et vérifier que les modifications sont correctement enregistrées.
 
@@ -325,9 +313,7 @@ Maintenant que nous avons des commandes personnalisé pour ce connecté a l’ad
   6. Vérifier que l'ancien titre du produit n'est plus affiché avec `cy.containProductTitle(product.title)`.
   7. Confirmer que le nouveau titre est affiché avec `cy.containProductTitle(updateProduct.title, true)`.
 
----
-
-### **4. Suppression d'un produit ("Delete product")**
+**4.** Suppression d'un produit (`"Delete product"`)
 
 **Objectif** : Supprimer un produit de la liste et s'assurer qu'il n'apparaît plus.
 
@@ -341,6 +327,12 @@ Fichiers
 
 - `cypress/e2e/server-component.cy.ts`
 - `cypress/support/commands.tse`
+
+### 3. 🚀 All Tests for `CI`
+
+```tsx
+ "test": "vitest  --run && e2e:test-clean-ci",
+```
 
 ## Aller plus loin
 
