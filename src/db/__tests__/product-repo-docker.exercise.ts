@@ -1,11 +1,11 @@
-// 🐶 Desactive cette règle ESLIint pour authoriser du code avant les imports
+// 🐶 Désactive cette règle `ESLIint` pour autoriser du code avant les imports
 // 🤖 /* eslint-disable import/first */
 import {describe, it, afterAll, expect, vi} from 'vitest'
 
-// 🐶 Import du setup de la base de données (dockers tests)
+// 🐶 Importe du `setup` de la base de données (dockers tests)
 //import {setupTestDatabase} from './setup-container'
 
-// 🐶 Mock '@/db/schema' avant les imports des DAO
+// 🐶 Mocke `@/db/schema` avant les imports des `DAO`
 // 🤖
 // vi.mock('@/db/schema', async () => {
 //   const setup = await setupTestDatabase()
@@ -21,10 +21,10 @@ import {createCategoryDao} from '../repositories/category-repository'
 import {CreateEditProduct} from '@/services/types/domain/product-types'
 import {createProductDao} from '../repositories/product-repository'
 
-// 🐶 Normalement le premier test devrait s'executer correctement
-// mais pas le second : error: duplicate key value violates unique constraint "product_title_unique"
-// Pourquoi ? LE titre du produit est unique dans la table products
-// Si on veut une instance vierge a chaque test il faut utiliser 'beforeEach'
+// 🐶 Normalement le premier test devrait s'exécuter correctement
+// Mais pas le second : `error: duplicate key value violates unique constraint "product_title_unique"`
+// Pourquoi ? Le titre du produit est unique dans la table `products`
+// Si on veut une instance vierge à chaque test, il faut utiliser `beforeEach`
 // et mocker une nouvelle instance de la base de données
 describe('Docker Container Database Tests', () => {
   let container: StartedPostgreSqlContainer

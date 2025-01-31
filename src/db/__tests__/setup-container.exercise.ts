@@ -19,16 +19,16 @@ export async function setupTestDatabase() {
     connectionString: container.getConnectionUri(),
   })
 
-  // 🐶 Mocker une nouvelle instance de la base de données avec Drizzle
+  // 🐶 Mocker une nouvelle instance de la base de données avec `Drizzle`
   const db = ''
   // const db = drizzle(pool, {
   //   schema: {...todos, ...users, ...categories, ...products, ...accounts},
   // })
 
-  // 🐶 Create extension pour support UUID
+  // 🐶 Crée une extension pour support `UUID`
   // await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
 
-  // 🐶 Exécuter les migrations
+  // 🐶 Exécute les migrations
   // await migrate(db, {migrationsFolder: 'drizzle/migrations'})
 
   return {

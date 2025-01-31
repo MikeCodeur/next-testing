@@ -1,16 +1,16 @@
-# Tests Persistence - Docker
+# Tests Persistance - Docker
 
-### 💡 Description longue de l'exercice
+### 💡 Utiliser `Docker`
 
 ## 📝 Tes notes
 
-Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
+Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
 
 ## Comprendre
 
-Précédemment nous avons utiliser une vraie base de données. Cela nécessite d’installer, configurer, et maintenant une instance Postgres. De plus si plusieurs utilisateurs / CI / utilisent cette instance au même moment cela peut poser des problèmes. Pour resoudre ce problème le mieux est d'avoir une instance embarquée qui va s’initialiser lors des test puis sera détruite a la fin.
+Précédemment, nous avons utilisé une vraie base de données. Cela nécessite d’installer, configurer, et maintenir une instance `Postgres`. De plus si plusieurs utilisateurs / CI / utilisent cette instance au même moment, cela peut poser des problèmes. Pour résoudre ce problème le mieux est d'avoir une instance embarquée qui va s’initialiser lors des tests puis sera détruite à la fin.
 
-Pour cela il existe [testcontainer](https://testcontainers.com/modules/postgresql/?language=nodejs) basé sur [Docker](https://www.docker.com/) qui va permette de démarrer une instance de `postgres` localement.
+Pour cela, il existe [testcontainer](https://testcontainers.com/modules/postgresql/?language=nodejs) basé sur [Docker](https://www.docker.com/) qui va permette de démarrer une instance de `postgres` localement.
 
 - Ajout dans le projet
 
@@ -37,13 +37,13 @@ export async function setupTestDatabase() {
 }
 ```
 
-⚠️ Pour fonctionner Docker doit être configuré correctement
+⚠️ Pour fonctionner, `Docker` doit être configuré correctement
 
 - [Windows](https://docs.docker.com/desktop/setup/install/windows-install/)
 - [Mac](https://docs.docker.com/desktop/setup/install/mac-install/)
 - [Linux](https://docs.docker.com/desktop/setup/install/linux/)
 
-Exemple WSL / Unbuntu
+Exemple `WSL` / `Unbuntu`
 
 ```bash
 #installe Docker
@@ -63,11 +63,11 @@ sudo systemctl restart docker
 sudo usermod -aG docker $USER
 ```
 
-⚠️ ps : Il faut souvent reboot le system complet la première fois
+⚠️ PS : Il faut souvent reboot le system complet la première fois.
 
 ## Exercice
 
-Le premier étape consiste a ne plus utiliser le pool de connexion de notre application mais celui de docker
+La première étape consiste à ne plus utiliser le pool de connexion de notre application mais celui de docker
 
 ```tsx
 // db/schema
@@ -89,10 +89,10 @@ const db = drizzle(pool, {
 export default db
 ```
 
-- **🐶 Step 1 : Edite le fichier** `setup-container.ts` pour creer un `Pool` et un Instance `Drizzle` connecté a `docker`
-- **🐶 Step 2 : Mock `@/db/schema` dans les tests utiliser la bonne instance**
+- **🐶 Step 1 :** Edite le fichier \*\*\*\*`setup-container.ts` pour créer un `Pool` et une Instance `Drizzle` connectée à `docker`
+- **🐶 Step 2 :** Mock **`@/db/schema`** dans les tests en utilisant la bonne instance
 
-_Note : Pour être sur que les tests ne n’exécutent pas sur l’instance précédente , supprime/renomme/commente les fichiers `.env.test`. Pour cette exercice nous avons volontairement générer une erreur si on essaye d’utiliser `drizzle` en mode test_
+Note : Pour être sûr que les tests ne n’exécutent pas sur l’instance précédente, supprime/renomme/commente les fichiers `.env.test`. Pour cet exercice, nous avons volontairement généré une erreur si on essaye d’utiliser `drizzle` en mode test
 
 ```tsx
 //src/db/schema/index.ts
@@ -110,7 +110,7 @@ Fichiers
 
 ## Bonus
 
-### 1. 🚀 Fait la même chose pour d’autres repository
+### 1. 🚀 Fais la même chose pour d’autres repository
 
 ## Aller plus loin
 
@@ -126,4 +126,4 @@ Fichiers
 
 ## 🐜 Feedback
 
-Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-react-avis).
+Remplir le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=07%20Docker).
