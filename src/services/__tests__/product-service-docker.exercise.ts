@@ -1,10 +1,10 @@
-//🐶 desactive cette regle pour pouvoir mocker  /* eslint-disable import/first */
+//🐶 Désactive cette règle pour pouvoir mocker  `/* eslint-disable import/first */`
 import {beforeAll, beforeEach, vi, test, describe, expect} from 'vitest'
 
-// 🐶 importe le setupTestDatabase
+// 🐶 Importe le `setupTestDatabase`
 //import {setupTestDatabase} from '@/db/__tests__/setup-container'
 
-// 🐶 mocke 'db/shema'
+// 🐶 Mocke `db/shema`
 // vi.mock('@/db/schema', async () => {
 //   const db = await setupTestDatabase()
 //   return {
@@ -62,7 +62,7 @@ const getProductTest = () => {
 }
 
 describe.sequential('[Docker][getProductsService] when called', () => {
-  // 🐶 ajoute le code pour mocker la db
+  // 🐶 Ajoute le code pour mocker la db
   // let db: NodePgDatabase
 
   // beforeAll(async () => {
@@ -88,7 +88,7 @@ describe.sequential('[Docker][getProductsService] when called', () => {
 })
 
 describe.sequential('[Docker][getCategoriesService] when called', () => {
-  // 🐶 ajoute le code pour mocker la db
+  // 🐶 Ajoute le code pour mocker la db
   // let db: NodePgDatabase
 
   // beforeAll(async () => {

@@ -4,7 +4,7 @@
 
 ## 📝 Tes notes
 
-Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
+Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
 
 ## Comprendre
 
@@ -16,7 +16,7 @@ Ces tests sont essentiels pour s’assurer que l’application fonctionne correc
 
 ## Exercice
 
-Dans cet exercice nous avons fournis un test d’intégration pour le service product `product-service.test.ts` mais avec la méthode d’initialisation Drizzle
+Dans cet exercice, nous avons fourni un test d’intégration pour le service `product` dans `product-service.test.ts` mais avec la méthode d’initialisation `Drizzle`
 
 ```tsx
 beforeAll(async () => {
@@ -24,15 +24,22 @@ beforeAll(async () => {
 })
 ```
 
-- **🐶 En te basant sur le même jeux de test tu vas devoir créer** `product-service-docker.test.ts`
+- **🐶** En te basant sur le même jeu de tests, tu vas devoir créer `product-service-docker.test.ts`
 
-Le meme jeux de tests mais cette fois ci en utiliser `postgre docker`
+Le même jeu de tests mais cette fois ci en utilisant `postgres docker`
+
+PS : Pense à bien fermer les containers après chaque test
+
+```tsx
+ afterAll(async () => {
+    await pool.end()
+    await container.stop()
+  })
+```
 
 Fichiers
 
 - `src/services/**tests**/product-service-docker.test.ts`
-
-##
 
 ## Aller plus loin
 

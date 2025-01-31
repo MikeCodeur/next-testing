@@ -1,4 +1,4 @@
-//version sans docker avec vrai bdd de test
+//Version sans docker avec vraie bdd de test
 import {faker} from '@faker-js/faker'
 import * as productRepository from '@/db/repositories/product-repository'
 import {AuthUser} from '../authentication/type'
