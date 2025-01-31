@@ -1,14 +1,16 @@
 # Test de Composant React (Testing librairie)
 
-### 💡 Description longue de l'exercice
+### 💡 Tester les composants `React`
 
 ## 📝 Tes notes
 
-Detaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
+Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
 
 ## Comprendre
 
-Pour tester les composants `React` avec `testing librairie` il faut utiliser [`render`](https://testing-library.com/docs/react-testing-library/api/#render) pour effectuer le rendu du composant , ensuite on pour tester avec [`screen`](https://testing-library.com/docs/queries/about/)
+Dans une application, il faut tester les différentes couches de notre application - Présentation - Service - Persistance. Il faut également tester le tout (Intégration / End to End) . Nous allons ici commencer par voir comment tester la présentation. C’est à dire les composants `React`. Nous utiliseront [Testing Librairie](https://testing-library.com/), la référence pour ce type de tests.
+
+Pour tester les composants `React` avec `testing librairie` il faut utiliser [`render`](https://testing-library.com/docs/react-testing-library/api/#render) pour effectuer le rendu du composant , ensuite on peut tester avec [`screen`](https://testing-library.com/docs/queries/about/)
 
 ```tsx
 import {render, screen} from '@testing-library/react'
@@ -20,11 +22,13 @@ describe('Composant', () => {
  })
 ```
 
-📑 Le liens vers la doc [https://testing-library.com/docs/queries/about/](https://testing-library.com/docs/queries/about/)
+📑 Le lien vers la doc [https://testing-library.com/docs/queries/about/](https://testing-library.com/docs/queries/about/)
 
 ## Exercice
 
-Dans cet exercice tu vas devoir tester le composant `Home` les tests
+Dans cet exercice, tu vas devoir tester le composant `Home`.
+
+Les tests :
 
 - Le titre de la page d'accueil est correct
 - L'auteur de la page d'accueil est correct
@@ -37,14 +41,14 @@ Fichiers
 
 ## Bonus
 
-### 1. 🚀 Test Hook (Context API)
+### 1. 🚀 Test Hook (`Context API`)
 
-Dans cet exercice, nous allons apprendre à tester des composants utilisant le **Context API** et des hooks React, en combinant `@testing-library/react` avec `renderHook`. Nous allons travailler sur l'exemple d'un système de thème basé sur le contexte, où l'utilisateur peut basculer entre les modes `light`, `dark`, et `system`. L'objectif est d'écrire des tests unitaires pour garantir que le contexte fonctionne correctement.
+Dans cet exercice, nous allons apprendre à tester des composants utilisant le `Context API` et des \*\*\*\*`hooks React`, en combinant `@testing-library/react` avec `renderHook`. Nous allons travailler sur l'exemple d'un système de thème basé sur le contexte, où l'utilisateur peut basculer entre les modes `light`, `dark`, et `system`. L'objectif est d'écrire des tests unitaires pour garantir que le contexte fonctionne correctement.
 
 Les concepts clés que nous allons aborder :
 
-1. **Configurer un environnement de test mock** (comme `matchMedia`).
-2. **Utiliser `renderHook`** pour tester des hooks isolés.
+1. **Configurer un environnement de test `mock`** (comme `matchMedia`).
+2. **Utiliser `renderHook`** pour tester des `hooks` isolés.
 3. **Simuler des actions utilisateur** avec `act` pour modifier le contexte.
 4. **Nettoyer les effets secondaires** pour s'assurer de tests indépendants.
 
@@ -53,17 +57,15 @@ Les concepts clés que nous allons aborder :
 Vous devez avoir un fichier de contexte, comme `WrapperContext`, qui fournit le thème à l'ensemble de l'application. Exemple simplifié :
 
 ```tsx
-
 import {ThemeProvider} from 'next-themes';
 import React, {ReactNode} from 'react';
 
 export const WrapperContext = ({children}: {children: ReactNode}) => {
   return <ThemeProvider>{children}</ThemeProvider>;
 };
-
 ```
 
-### **3. Écrire ls tests**
+### **3. Écrire les tests**
 
 Le fichier de test est organisé en trois étapes :
 
@@ -73,7 +75,7 @@ Le fichier de test est organisé en trois étapes :
 
 Voici une description détaillée des tests :
 
-### **Test 1 : Le thème par défaut est `system`**
+**Test 1 : Le thème par défaut est `system`**
 
 ```tsx
 it("Theme default is 'system'", async () => {
@@ -82,15 +84,14 @@ it("Theme default is 'system'", async () => {
   });
   expect(themeResult.current.theme).toBe('system');
 });
-
 ```
 
 - Utilise `renderHook` pour tester `useTheme` dans le contexte de `WrapperContext`.
 - Vérifie que la valeur initiale de `theme` est bien `system`.
 
-Test 2 : Changer le thème en `light`
+**Test 2 : Changer le thème en `light`**
 
-Test 3 : Changer le thème en `dark`
+**Test 3 : Changer le thème en `dark`**
 
 ### **Conseils pour l'exercice**
 
@@ -98,15 +99,13 @@ Test 3 : Changer le thème en `dark`
    - Utilise `beforeEach` pour configurer `matchMedia`.
    - Utilise `afterEach` pour réinitialiser `localStorage` et éviter les interférences entre les tests.
 2. **Simuler des actions utilisateur :**
-   - Utilise `act` pour garantir que les mises à jour de l'état se font dans un environnement React contrôlé.
+   - Utilise `act` pour garantir que les mises à jour de l'état se font dans un environnement `React` contrôlé.
 3. **Bonne pratique :**
    - Exécute les tests avec `npx vitest --run` pour vérifier que tout fonctionne comme prévu.
 
 Fichiers
 
 - `src/app/__tests__/units/theme.test.tsx`
-
-###
 
 ## Aller plus loin
 
@@ -122,4 +121,4 @@ Fichiers
 
 ## 🐜 Feedback
 
-Remplir le formulaire le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=02%20Tests-component).
+Remplir le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=02%20Tests-component).

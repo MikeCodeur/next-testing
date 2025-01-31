@@ -1,6 +1,6 @@
 import {describe, it, expect, beforeEach, vi, afterEach} from 'vitest'
 import {useTheme} from 'next-themes'
-// 🐶 importe le composant ThemeProvider
+// 🐶 Importe le composant `ThemeProvider`
 //import {WrapperContext} from '../utils'
 import {act, renderHook} from '@testing-library/react'
 
@@ -21,7 +21,7 @@ describe('Theme', () => {
     })
   })
 
-  //🐶 Uitlise le WrapperContext
+  //🐶 Uitlise le `WrapperContext`
   afterEach(() => {
     window.localStorage.removeItem('theme')
   })
@@ -53,5 +53,5 @@ describe('Theme', () => {
   })
 })
 
-//juste pour l'exercice
+//Juste pour l'exercice
 export const justForCompile = 'justForCompile'
