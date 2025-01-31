@@ -1,6 +1,12 @@
 # Test Service : Autorisation
 
-### 💡 Description longue de l'exercice
+### 💡 Lancer des tests d’autorisation
+
+## 📝 Tes notes
+
+Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template)
+
+## Comprendre
 
 Dans cette section, tu vas écrire des tests pour valider les fonctions d’autorisation de ton application. Ces fonctions permettent de vérifier les permissions, les rôles et la hiérarchie des rôles utilisateurs.
 
@@ -10,12 +16,6 @@ L’objectif est de :
 2. Tester les différents cas possibles, même ceux inattendus, pour garantir une application robuste.
 
 Tu commenceras par tester deux fonctions principales : `canCreateProduct` et `canReadProduct`, avant d’ajouter des tests pour les rôles et la hiérarchie dans les bonus.
-
-## 📝 Tes notes
-
-Détaille ce que tu as appris ici, sur une page [Notion](https://go.mikecodeur.com/course-notes-template).
-
-## Comprendre
 
 Voici un exemple de fonction pour générer un utilisateur de test :
 
@@ -36,16 +36,13 @@ const createTestUser = (role: RoleEnum): AuthUser => ({
     },
   },
 });
-
 ```
 
-📑 Le lien vers la doc officielle [Vitest Documentation](https://vitest.dev/).
+📑 Le lien vers la doc [Vitest Documentation](https://vitest.dev/).
 
 Les tests te permettront de vérifier que les fonctions retournent les bons résultats en fonction des rôles des utilisateurs.
 
----
-
-## Exercice principal
+## Exercice
 
 Dans cet exercice, tu vas tester les deux fonctions suivantes :
 
@@ -54,11 +51,9 @@ Dans cet exercice, tu vas tester les deux fonctions suivantes :
 
 Il est important de comprendre comment tester ces cas pour s'assurer que les autorisations de base sont bien respectées.
 
-### Fichiers
+Fichiers
 
 - `exercise/service-authorization.test.js`
-
----
 
 ## Bonus
 
@@ -73,11 +68,9 @@ Ajoute des tests pour valider les rôles des utilisateurs :
    - Vérifie qu’un utilisateur possède un rôle donné.
    - Vérifie que la fonction retourne `false` si le rôle ne correspond pas.
 
-### Fichiers
+Fichiers
 
 - `bonus-1/service-authorization.test.js`
-
----
 
 ### 2. 🚀 Vérifier la hiérarchie des rôles (`checkRoleHierarchy`)
 
@@ -87,20 +80,16 @@ Ajoute des tests pour valider la hiérarchie des rôles :
 2. Un utilisateur avec un rôle égal peut accéder à ses propres fonctionnalités.
 3. Un utilisateur avec un rôle inférieur ne peut pas accéder aux fonctionnalités des rôles supérieurs.
 
-### Fichiers
+Fichiers
 
 - `bonus-2/service-authorization.test.js`
 
----
-
 ## Aller plus loin
 
-📑 Le lien vers la documentation :
+📑 Les liens vers la documentation :
 
 - [Vitest](https://vitest.dev/)
 - [Faker.js](https://fakerjs.dev/)
-
----
 
 ## Ils vont t’aider
 
@@ -110,8 +99,6 @@ Ajoute des tests pour valider la hiérarchie des rôles :
 - **⛏️ Hulk le Marteau** : _Quand du code à simplifier ou à supprimer est présent._
 - **👨‍✈️ Hugo le chef de projet** : _Hugo t’aidera sur les spécifications des tests._
 
----
-
 ## 🐜 Feedback
 
-Remplis le formulaire de [FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=03%20Test-authorization).
+Remplir le [formulaire de FeedBack](https://go.mikecodeur.com/cours-next-avis?entry.1912869708=Next%20Mastery&entry.1430994900=8.Next%20Testing&entry.533578441=03%20Test-service%20Autorisation).

@@ -7,13 +7,13 @@ import {
 import {faker} from '@faker-js/faker'
 import {setupUserAuthExtentedMocked} from './helper-service-test'
 
-// 🐶 Crée une fonction pour générer des utilisateurs de test avec faker
+// 🐶 Crée une fonction pour générer des utilisateurs de test avec `faker`
 const createTestUser = (role: RoleEnum) => ({
   role,
   user: {
-    id: faker.string.uuid(), // 🐶 Utilise faker.string.uuid()
-    email: faker.internet.email(), // 🐶 Utilise faker.internet.email()
-    name: faker.person.firstName(), // 🐶 Utilise faker.person.firstName()
+    id: faker.string.uuid(), // 🐶 Utilise `faker.string.uuid()`
+    email: faker.internet.email(), // 🐶 Utilise `faker.internet.email()`
+    name: faker.person.firstName(), // 🐶 Utilise `faker.person.firstName()`
     image: null,
   },
   session: {
@@ -25,7 +25,7 @@ const createTestUser = (role: RoleEnum) => ({
   },
 })
 
-// 🐶 Mocke le module auth-service
+// 🐶 Mocke le module `auth-service`
 vi.mock('@/services/authentication/auth-service', () => ({
   auth: vi.fn(),
   getUserAuthExtented: vi.fn(),
@@ -42,7 +42,7 @@ describe('Authorization Service', () => {
       // 🐶 Mocke le comportement pour qu’aucun utilisateur ne soit connecté
       await setupUserAuthExtentedMocked()
 
-      // 🐶 Appelle la fonction canCreateProduct
+      // 🐶 Appelle la fonction `canCreateProduct`
       //await canCreateProduct()
 
       // 🐶 Vérifie que le résultat est false
@@ -56,7 +56,7 @@ describe('Authorization Service', () => {
       // 🐶 Mocke le comportement pour qu’un utilisateur admin soit connecté
       //await setupUserAuthExtentedMocked(adminUser)
 
-      // 🐶 Appelle la fonction canCreateProduct
+      // 🐶 Appelle la fonction `canCreateProduct`
 
       // 🐶 Vérifie que le résultat est true
       //expect(result).toBe(true)
@@ -66,7 +66,7 @@ describe('Authorization Service', () => {
       // 🐶 Crée un utilisateur classique
       //const regularUser = createTestUser(RoleEnum.USER)
       // 🐶 Mocke le comportement pour qu’un utilisateur non admin soit connecté
-      // 🐶 Appelle la fonction canCreateProduct
+      // 🐶 Appelle la fonction `canCreateProduct`
       // 🐶 Vérifie que le résultat est false
       //expect(result).toBe(false)
     })
@@ -74,7 +74,7 @@ describe('Authorization Service', () => {
 
   describe('canReadProduct', () => {
     it('should always return true', async () => {
-      // 🐶 Appelle directement la fonction canReadProduct
+      // 🐶 Appelle directement la fonction `canReadProduct`
       // 🐶 Vérifie que le résultat est true
       //expect(result).toBe(true)
     })
